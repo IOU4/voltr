@@ -5,6 +5,7 @@ class Router
   private $method;
   private $uri;
 
+
   public function __construct()
   {
     $this->method = $_SERVER['REQUEST_METHOD'];
@@ -13,12 +14,10 @@ class Router
 
   public function get(string $route, callable $callable)
   {
-    $parsed_url = parse_url($this->uri);
-    $query = [];
-    if (isset($parsed_url['query'])) {
-      parse_str($parsed_url['query'], $query);
-    }
-    if ('/api' . $route == $parsed_url['path'] && $this->method == 'GET') {
+    $path = parse_url($this->uri, PHP_URL_PATH);
+    $query = parse_url($this->uri, PHP_URL_QUERY);
+    if ($query) parse_str($query, $query);
+    if ('/api' . $route == $path && $this->method == 'GET') {
       call_user_func($callable, $query);
       die();
     }
@@ -26,7 +25,7 @@ class Router
 
   public function post(string $route, callable $callable)
   {
-    $path = parse_url($this->uri)['path'];
+    $path = parse_url($this->uri, PHP_URL_PATH);
     if ('/api' . $route == $path && $this->method == 'POST') {
       $data = empty($_POST) ? json_decode(file_get_contents('php://input'), true) : $_POST;
       call_user_func($callable, $data);
@@ -36,8 +35,8 @@ class Router
 
   public function patch(string $route, callable $callable)
   {
-    $path = parse_url($this->uri)['path'];
-    if ('/api/patch' . $route == $path && $this->method == 'POST') {
+    $path = parse_url($this->uri, PHP_URL_PATH);
+    if ('/api' . $route == $path && $this->method == 'PATCH') {
       $data = json_decode(file_get_contents('php://input'));
       call_user_func($callable, $data);
       die();
@@ -46,8 +45,8 @@ class Router
 
   public function delete(string $route, callable $callable)
   {
-    $path = parse_url($this->uri)['path'];
-    if ('/api/delete' . $route == $path && $this->method == 'POST') {
+    $path = parse_url($this->uri, PHP_URL_PATH);
+    if ('/api' . $route == $path && $this->method == 'DELETE') {
       $data = json_decode(file_get_contents('php://input'));
       call_user_func($callable, $data);
       die();
