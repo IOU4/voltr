@@ -2,18 +2,18 @@ version: "3"
 
 services: 
   # dev:
-  #   image: node:12-alpine
+  #   image: node:16-alpine
   #   container_name: developement
-  #   command: sh -c "yarn install && yarn run dev"
+  #   command: sh -c "npm run dev"
   #   ports:
   #     - 3000:3000
-  #   working_dir: /app
+  #   working_dir: /app/nuxt
   #   volumes:
-  #     - ./:/app
+  #     - ./nuxt:/app/nuxt
   #   environment:
   #     MYSQL_HOST: database
   #     MYSQL_USER: root
-  #     MYSQL_PASSWORD: 
+  #     MYSQL_PASSWORD:
   #     MYSQL_DB: voltr
 
   server:

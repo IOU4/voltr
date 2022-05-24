@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         primary: colors.emerald,
         danger: colors.rose,
+        disabled: '#b9b7bd'
       }
     },
   },
