@@ -3,11 +3,14 @@ interface Props {
   label?: string
   placeholder?: string
   type?: string,
-  value?: string
   span?: string | null
+  modelValue?: Object | null
+  required?: boolean
 }
+defineEmits(['update:modelValue']);
 
-const { label = '', placeholder = '', type = "text", value = '', span = null } = defineProps<Props>();
+const { label = '', placeholder = '', type = "text", span = null, modelValue = null, required = false } = defineProps<Props>();
+const pattern = "00212[0-9]{9}";
 </script>
 <template>
   <div class=" group flex flex-col space-y-2">
@@ -15,8 +18,8 @@ const { label = '', placeholder = '', type = "text", value = '', span = null } =
       {{ label }}:
       <span v-if="span" class="text-xs font-light"> {{ span }}</span>
     </label>
-    <input :type="type" :placeholder="placeholder" v-model="value"
-      class="p-4 rounded-md border border-primary-500 placeholder:text-xs text-disabled focus:shadow-primary-500 focus:shadow  focus:outline-none focus:ring-2 focus:text-black appearance-none ring-primary-500"
-      :class="type == 'submit' ? 'bg-primary-500 text-center text-white font-bold shadow' : ''">
+    <input :type="type" :placeholder="placeholder" :value="modelValue" :pattern="type == 'tel' ? pattern : null"
+      :required="required" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      class="p-4 rounded-md border border-primary-500 placeholder:text-xs palceholder:text-disabled focus:shadow-primary-500 focus:shadow text-black">
   </div>
 </template>

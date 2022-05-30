@@ -3,11 +3,11 @@
     <div class="w-32 h-32">
       <img src="~assets/logo.png" alt="voltr logo">
     </div>
-    <AuthNav v-if="$route.path != '/auth/resetpassword'" />
+    <NavAuth v-if="$route.path != '/auth/resetpassword'" />
     <NuxtPage class="max-w-xl" />
   </div>
 </template>
-<style>
+<style lang="postcss">
 .nuxtlink {
   @apply text-xs text-primary-400 text-right;
 }

@@ -9,10 +9,12 @@ class Database
     $this->connection = $connection;
   }
 
-  function execStatement($query, $params = [])
+  function execStatement(string $query, array $params = [])
   {
     $stmnt = $this->connection->prepare($query);
     $stmnt->execute($params);
-    return $stmnt;
+    $res =  $stmnt->get_result();
+    if (!$res) return true;
+    return $res;
   }
 }
