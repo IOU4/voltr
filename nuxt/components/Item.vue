@@ -5,7 +5,7 @@ interface Props {
   item?: Item
 }
 const {
-  item
+  item = defaultItem
 } = defineProps<Props>();
 </script>
 
@@ -14,7 +14,7 @@ const {
     <div class="cover bg-slate-100 bg-no-repeat bg-contain bg-center w-full h-72 rounded-md">
       <!-- <img src="https://api.lorem.space/image/face?hash=33791" alt=""> -->
     </div>
-    <div class="details">
+    <div class="details p-2">
       <p>title : {{ item.title }}</p>
       <p>description: {{ item.description }}</p>
       <p>category: {{ item.category }}</p>

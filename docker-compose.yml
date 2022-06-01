@@ -39,7 +39,6 @@ services:
       MARIADB_ALLOW_EMPTY_PASSWORD: yes
     volumes:
       - ./api/db:/var/lib/mysql
-
   php:
     build: ./api
     container_name: phpcgi
