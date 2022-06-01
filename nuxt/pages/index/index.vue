@@ -1,21 +1,5 @@
 <script setup lang="ts">
-
-enum Categories {
-  BOOKS = 'books',
-  ELECTRONICS = "electronics"
-}
-
-interface Item {
-  id?: number,
-  title?: string,
-  description?: string,
-  author_id?: number,
-  author_name?: string,
-  cover?: string,
-  category?: Categories,
-  created_at?: string,
-  updated_at?: string
-}
+import { type Item } from '~~/store';
 
 const items = useItems();
 const api_url = useApiUrl();
@@ -26,9 +10,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <div v-for="item in items" :key="item.id">
-      <Item :item="item" />
-    </div>
+  <div class="flex flex-col gap-2">
+    <Item v-for="item in items" :key="item.id" :item="item" />
   </div>
 </template>
