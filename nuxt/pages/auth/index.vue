@@ -22,6 +22,7 @@ const handleSubmit = async () => {
   }
 }
 </script>
+
 <template>
   <div>
     <p class="text-sm text-center my-8 font-light">

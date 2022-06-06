@@ -29,5 +29,28 @@ body {
 }
 
 * {
-  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 active:appearance-none
+  @apply focus:outline-none focus:ring-1 focus:ring-primary-500 active:appearance-none
 }
+
+.icon {
+  @apply w-6 h-6 cursor-pointer;
+}
+
+.profile-img {
+  background-image: url("https://api.lorem.space/image/face?hash=33791");
+  @apply w-14 h-14 rounded-full bg-center bg-cover cursor-pointer;
+}
+
+
+.v-enter-active {
+  @apply transition duration-500 ease-linear;
+}
+
+.v-enter-from {
+  @apply opacity-0;
+}
+
+.floating-nav {
+  @apply absolute -bottom-16 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-md;
+}
+

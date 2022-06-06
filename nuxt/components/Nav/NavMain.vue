@@ -5,8 +5,7 @@ const isProfileVisible = ref<boolean>(false);
 </script>
 
 <template>
-  <header class="w-full absolute top-0 px-4 flex justify-between items-center shadow-md rounded-b-md">
-
+  <header class="w-full fixed top-0 right-0 px-4 flex justify-between bg-white items-center shadow-md z-10">
     <!-- logo  -->
     <div class="logo w-20 h-20">
       <img src="~assets/logo.png" alt="voltr logo">
@@ -55,28 +54,7 @@ const isProfileVisible = ref<boolean>(false);
 </template>
 
 <style scoped lang="postcss">
-.icon {
-  @apply w-6 h-6 cursor-pointer;
-}
-
-.profile-img {
-  background-image: url("https://api.lorem.space/image/face?hash=33791");
-  @apply w-14 h-14 rounded-full bg-center bg-cover cursor-pointer;
-}
-
 .router-link-active {
   @apply underline decoration-primary-400 underline-offset-4 decoration-2 text-primary-600;
-}
-
-.v-enter-active {
-  @apply transition-opacity duration-500 ease-linear;
-}
-
-.v-enter-from {
-  @apply opacity-0;
-}
-
-.floating-nav {
-  @apply absolute -bottom-16 right-0 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-md;
 }
 </style>

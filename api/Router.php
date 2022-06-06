@@ -37,7 +37,7 @@ class Router
   {
     $path = parse_url($this->uri, PHP_URL_PATH);
     if ('/api' . $route == $path && $this->method == 'PATCH') {
-      $data = json_decode(file_get_contents('php://input'));
+      $data = json_decode(file_get_contents('php://input'), true);
       call_user_func($callable, $data);
       die();
     }
@@ -47,7 +47,7 @@ class Router
   {
     $path = parse_url($this->uri, PHP_URL_PATH);
     if ('/api' . $route == $path && $this->method == 'DELETE') {
-      $data = json_decode(file_get_contents('php://input'));
+      $data = json_decode(file_get_contents('php://input'), true);
       call_user_func($callable, $data);
       die();
     }

@@ -5,18 +5,19 @@ class Item
   private int $id;
   private string $title;
   private string $description;
-  private int $author_id;
-  private string $author_name;
-  private string $cover;
+  private ?int $author_id;
+  private ?string $author_name;
+  private ?string $cover;
   private string $category;
   private ItemModel $model;
+  const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp'];
 
   public function __construct(?int $id = null)
   {
     $this->model = new ItemModel();
     if (!$id) return;
     $db_data = $this->get_item_by_id($id);
-    if (!$db_data) return;
+    if (!$db_data) exit('no item found with this id');
     $this->id = $id;
     $this->title = $db_data['title'];
     $this->description = $db_data['description'];
@@ -41,5 +42,68 @@ class Item
   {
     $model = new ItemModel();
     echo json_encode($model->fetch_all());
+  }
+
+  public function delete()
+  {
+    if (empty($this->id)) exit('no id for delete');
+    try {
+      $this->model->delete($this->id);
+      echo json_encode(['deleted' => true]);
+    } catch (Exception $e) {
+      echo json_encode($e->getMessage());
+    }
+  }
+
+  function store_item_images()
+  {
+    if (empty($this->id)) exit('no id');
+    $uploads_dir = '/app/api/uploaded/imgs';
+    $names = array();
+
+    foreach ($_FILES as $image) :
+      $tmp_name = $image['tmp_name'];
+      try {
+        $name = $this->guidv4();
+        $extension = basename($image['type']);
+        if (!in_array($extension, $this::ALLOWED_IMAGE_EXTENSIONS)) {
+          echo 'type not allowed';
+          continue;
+        }
+        $extension = '.' . $extension;
+        $full_name = $name . $extension;
+        move_uploaded_file($tmp_name, "$uploads_dir/$full_name");
+        $this->model->store_item_image($this->id, $full_name);
+        $names[] = $full_name;
+      } catch (Throwable $e) {
+        echo json_encode($e->getMessage());
+      }
+    endforeach;
+    echo json_encode($names);
+  }
+
+  function get_item_images()
+  {
+    if (empty($this->id)) exit('no id');
+    try {
+      $images = $this->model->get_item_images($this->id);
+      echo  json_encode($images);
+    } catch (Throwable $e) {
+      echo json_encode($e->getMessage());
+    }
+  }
+
+  private function guidv4()
+  {
+    // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+    $data = random_bytes(16);
+
+    // Set version to 0100
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
   }
 }

@@ -13,7 +13,7 @@ class User
     $this->model = new UserModel();
     if (!$id) return;
     $db_data = $this->get_user_by_id($id);
-    if (!$db_data) return;
+    if (!$db_data) exit('not user found with this id');
     $this->id = $id;
     $this->username = $db_data['username'];
     $this->email = $db_data['email'];
@@ -83,9 +83,14 @@ class User
     }
   }
 
-  public static function info($data)
+  public function delete()
   {
-    if (isset($data['hi'])) echo json_encode(['success' => true]);
-    else echo json_encode('eroor');
+    if (empty($this->id)) exit('no id for delete');
+    try {
+      $this->model->delete($this->id);
+      echo json_encode(['deleted' => true]);
+    } catch (Exception $e) {
+      echo json_encode($e->getMessage());
+    }
   }
 }

@@ -10,7 +10,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <Item v-for="item in items" :key="item.id" :item="item" />
+  <div>
+    <div class="heading flex justify-between py-4 mb-2">
+      <h1 class="text-primary-500 text-lg">Available Items:</h1>
+      <IconsSearch class="icon" />
+    </div>
+    <div class="flex flex-col gap-10">
+      <Item v-for="item in items" :key="item.id" :item="item" />
+    </div>
   </div>
 </template>

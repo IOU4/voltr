@@ -40,4 +40,11 @@ class UserModel extends Database
     $query = 'select id, email, username, phone from users where id = (select last_insert_id())';
     return $this->execStatement($query)->fetch_assoc();
   }
+
+  function delete(int $id)
+  {
+    $query = "delete from users where id = ?";
+    $params = array($id);
+    $this->execStatement($query, $params);
+  }
 }

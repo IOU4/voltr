@@ -1,5 +1,3 @@
-export const useItem = () => useState<Item>('item', () => defaultItem)
-export const useItems = () => useState<Item[]>('items', () => [])
 export enum Categories {
   BOOKS = 'books',
   ELECTRONICS = "electronics"
@@ -28,3 +26,11 @@ export const defaultItem: Item = {
   created_at: "2022-05-26 10:59:05",
   updated_at: "2022-05-26 10:59:05"
 }
+
+export interface ItemImage {
+  id?: number,
+  name?: string
+}
+
+export const useItem = () => useState<Item>('item', () => JSON.parse(sessionStorage.getItem('ITEM')) ?? defaultItem);
+export const useItems = () => useState<Item[]>('items', () => JSON.parse(sessionStorage.getItem('ITEMS')) ?? []);
