@@ -51,6 +51,21 @@ body {
 }
 
 .floating-nav {
-  @apply absolute -bottom-16 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-md;
+  @apply absolute -bottom-16 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-lg;
 }
 
+.item-button {
+  @apply ring-1 ring-primary-500 p-2 rounded-md flex gap-2 transition-colors;
+}
+
+.item-button:hover {
+  @apply bg-primary-500;
+}
+
+/* @layer base { */
+/*     .before-clip-path { */
+/*       ::before { */
+/*         clip-path:  */
+/*       } */
+/*     } */
+/*   } */

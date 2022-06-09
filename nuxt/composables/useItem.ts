@@ -3,6 +3,27 @@ export enum Categories {
   ELECTRONICS = "electronics"
 }
 
+export enum Cities {
+  CASABLANCA = 'casablanca',
+  RABAT = 'rabat',
+  SAFI = 'safi',
+  BENI = 'beni-mellal',
+  MARAKKECH = 'marakkech',
+  AGADIR = 'agadir',
+  EL = 'el-jadida',
+  TANGER = 'tanger',
+  KHMISSAT = 'khmissat',
+  OUJDA = 'oujda',
+  BERKANE = 'berkane',
+  TATA = 'tata',
+  ERRACHIDIA = 'errachidia'
+}
+
+interface TmpCover {
+  name: string,
+  file: File,
+}
+
 export interface Item {
   id?: number,
   title?: string,
@@ -11,8 +32,11 @@ export interface Item {
   author_name?: string,
   cover?: string,
   category?: Categories,
+  city?: Cities,
+  address?: string,
   created_at?: string,
-  updated_at?: string
+  updated_at?: string,
+  tmp_cover?: TmpCover[]
 }
 
 export const defaultItem: Item = {
@@ -29,7 +53,7 @@ export const defaultItem: Item = {
 
 export interface ItemImage {
   id?: number,
-  name?: string
+  image?: string
 }
 
 export const useItem = () => useState<Item>('item', () => JSON.parse(sessionStorage.getItem('ITEM')) ?? defaultItem);

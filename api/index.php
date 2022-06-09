@@ -34,6 +34,23 @@ $app->get('/item/images', function ($query) {
   $item = new Item($query['id'] ?? null);
   $item->get_item_images();
 });
+$app->post('/item/create', function ($data) {
+  $item = new Item(null);
+  $item->create($data);
+});
+$app->delete('/item', function ($data) {
+  $item = new Item($data['id'] ?? null);
+  $item->delete();
+});
+
+
+// catergories
+$app->get('/categories', 'Category::all');
+
+// cities
+$app->get('/cities', 'City::all');
+
+
 
 exit(json_encode('no matches found'));
 session_unset();

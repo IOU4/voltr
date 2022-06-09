@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Item } from '~~/store';
+import { Item } from '~~/composables/useItem'
 import { DateTime } from 'luxon';
 
 interface Props {
@@ -45,13 +45,4 @@ const updateStateItem = () => {
   </NuxtLink>
 </template>
 
-<style lang="postcss">
-.item-button {
-  @apply border border-primary-500 p-2 rounded-md flex gap-2 transition-colors;
-}
-
-.item-button:hover {
-  @apply bg-primary-500;
-}
-</style>
 

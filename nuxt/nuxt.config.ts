@@ -13,6 +13,7 @@ export default defineNuxtConfig({
       }
     }
   },
+  modules: ['@formkit/nuxt'],
   experimental: {
     reactivityTransform: true
   },

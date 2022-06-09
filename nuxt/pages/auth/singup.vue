@@ -6,7 +6,7 @@ const passwordConfirmation = ref('');
 const apiUrl = useApiUrl();
 const hadleSubmit = async () => {
   if (passwordConfirmation.value != password.value) return alert('password not match');
-  const data = await fetch(`${apiUrl.value}/singup`, {
+  const data = await fetch(`${apiUrl}/singup`, {
     method: "POST",
     body: JSON.stringify({
 

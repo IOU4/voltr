@@ -1,8 +1,10 @@
 const colors = require('tailwindcss/colors');
+const formKitTailwind = require('@formkit/themes/tailwindcss')
 module.exports = {
   content: [
     "./*.vue",
-    "./**/*.vue"
+    "./**/*.vue",
+    "./formkit.config.ts"
   ],
   theme: {
     extend: {
@@ -13,10 +15,5 @@ module.exports = {
       }
     },
   },
-  plugins: [
-    // require('@tailwindcss/typography'),
-    require('@tailwindcss/forms'),
-    // require('@tailwindcss/line-clamp'),
-    // require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [formKitTailwind],
 }

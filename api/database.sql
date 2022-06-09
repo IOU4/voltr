@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-  id INT NOT NULL PRIMARY KEY,
-  name varchar(255)
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  category varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS cities (
@@ -42,75 +42,42 @@ CREATE TABLE IF NOT EXISTS items (
 
 CREATE TABLE IF NOT EXISTS items_images (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name TEXT,
+  image TEXT,
   item_id INT NOT NULL,
-  FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON PUDATE CASCADE
+  FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS saved_items (
-  id INT NOT NULL AUTO_INCREMENT, 
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   item_id INT NOT NULL,
   user_id INT NOT NULL,
-  FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON PUDATE CASCADE,
-  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON PUDATE CASCADE
+  FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO users (
-  id,
-  username,
-  email,
-  phone,
-  password
-) VALUES ( 
-  1,
-  'emaduo',
-  'adim@emad.me',
-  '+212600112233',
-  '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'
-);
--- password 'secret'
+INSERT INTO users ( id, username, email, phone, password) VALUES 
+  ( 1, 'emaduo', 'adim@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
+  ( 2, 'jawad', 'adim@jawad.me', '+212644556677', '$2y$10$GgRWD5Gf/As07rDoVGvZZ.CY2/Ki5JvsvwF3IICI2nsL.rDdbu3Mi'); -- password 'secret2' bcrypt default cost
 
-INSERT INTO users (
-  id,
-  username,
-  email,
-  phone,
-  password
-) VALUES ( 
-  2,
-  'jawad',
-  'adim@jawad.me',
-  '+212644556677',
-  '$2y$10$GgRWD5Gf/As07rDoVGvZZ.CY2/Ki5JvsvwF3IICI2nsL.rDdbu3Mi'
-);
--- password 'secret2' bcrypt default cost
+INSERT INTO categories (category) VALUES 
+  ('books'), 
+  ('electronics');
 
-INSERT INTO categories VALUES ( 1, 'books');
+INSERT INTO cities (city) VALUES 
+  ('casablanca'),
+  ('rabat'),
+  ('safi'),
+  ('beni-mellal'),
+  ('marakkech'),
+  ('agadir'),
+  ('el-jadida'),
+  ('tanger'),
+  ('khmissat'),
+  ('oujda'),
+  ('berkane'),
+  ('tata'),
+  ('errachidia');
 
-INSERT INTO items (
-  id,
-  title, 
-  description, 
-  category_id,
-  author_id
-  ) VALUES ( 
-  1,
-  'books',
-  'I have some used books in littirature, they are in a good status', 
-  1,
-  1
-);
-
-INSERT INTO items (
-  id,
-  title, 
-  description, 
-  category_id,
-  author_id
-  ) VALUES ( 
-  2,
-  'shuter island',
-  'leonardo decaprio makes prefect again, this thing gonna hurt your brain for a while', 
-  1,
-  2
-);
+INSERT INTO items (title, description, category_id, city_id, address, author_id) VALUES 
+  ('books', 'I have some used books in littirature, they are in a good status', 1,1,'ain sbe3', 1),
+  ('shuter island', 'leonardo decaprio makes prefect again, this thing gonna hurt your brain for a while', 1, 2, 'soussi', 2);

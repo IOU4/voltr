@@ -9,6 +9,8 @@ class Item
   private ?string $author_name;
   private ?string $cover;
   private string $category;
+  private string $city;
+  private string $address;
   private ItemModel $model;
   const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp'];
 
@@ -25,6 +27,8 @@ class Item
     $this->author_name = $db_data['author_name'];
     $this->cover = $db_data['cover'];
     $this->category = $db_data['category'];
+    $this->city = $db_data['city'];
+    $this->address = $db_data['address'];
   }
 
   private function get_item_by_id(int $id)
@@ -58,28 +62,12 @@ class Item
   function store_item_images()
   {
     if (empty($this->id)) exit('no id');
-    $uploads_dir = '/app/api/uploaded/imgs';
     $names = array();
-
     foreach ($_FILES as $image) :
-      $tmp_name = $image['tmp_name'];
-      try {
-        $name = $this->guidv4();
-        $extension = basename($image['type']);
-        if (!in_array($extension, $this::ALLOWED_IMAGE_EXTENSIONS)) {
-          echo 'type not allowed';
-          continue;
-        }
-        $extension = '.' . $extension;
-        $full_name = $name . $extension;
-        move_uploaded_file($tmp_name, "$uploads_dir/$full_name");
-        $this->model->store_item_image($this->id, $full_name);
-        $names[] = $full_name;
-      } catch (Throwable $e) {
-        echo json_encode($e->getMessage());
-      }
+      $res = $this->store_single_image($image, false);
+      if ($res) $names[] = $res;
     endforeach;
-    echo json_encode($names);
+    echo json_encode(['stored' => true, 'names' => $names]);
   }
 
   function get_item_images()
@@ -90,6 +78,20 @@ class Item
       echo  json_encode($images);
     } catch (Throwable $e) {
       echo json_encode($e->getMessage());
+    }
+  }
+
+  public function create(array $data)
+  {
+    $this->validate_data($data);
+    try {
+      if (isset($_FILES['cover'])) $cover = $this->store_single_image($_FILES['cover'], true);
+      $data['cover'] = $cover ?? null;
+      $this->model->create($data);
+      $item = $this->model->get_last_inserted_item();
+      echo json_encode(['created' => true, 'item' => $item]);
+    } catch (Throwable $th) {
+      echo json_encode(['created' => false, 'error' => $th->getMessage()]);
     }
   }
 
@@ -105,5 +107,39 @@ class Item
 
     // Output the 36 character UUID.
     return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+  }
+
+  private function validate_data(array $data)
+  {
+    $errors = [];
+    if (!isset($data['title'])) $errors['title'] = 'no title';
+    if (!isset($data['description'])) $errors['description'] = 'no description';
+    if (!isset($data['category'])) $errors['category'] = 'no category';
+    if (!isset($data['city'])) $errors['city'] = 'no city';
+    if (!isset($data['address'])) $errors['address'] = 'no address';
+    if (!isset($data['author_id'])) $errors['author_id'] = 'no author_id';
+    if (count($errors)) exit(json_encode(['created' => false, 'errors' => $errors]));
+  }
+
+  private function store_single_image(array $image, bool $isCover): string|bool
+  {
+    $tmp_name = $image['tmp_name'];
+    $uploads_dir = '/app/api/uploaded/imgs';
+    try {
+      $name = $this->guidv4();
+      $extension = basename($image['type']);
+      if (!in_array($extension, $this::ALLOWED_IMAGE_EXTENSIONS)) {
+        echo 'type not allowed';
+        return false;
+      }
+      $extension = '.' . $extension;
+      $full_name = $name . $extension;
+      move_uploaded_file($tmp_name, "$uploads_dir/$full_name");
+      if (!$isCover) $this->model->store_item_image($this->id, $full_name);
+      return $full_name;
+    } catch (Throwable $e) {
+      echo json_encode($e->getMessage());
+      return false;
+    }
   }
 }

@@ -1,12 +1,4 @@
-export const useToken = () => useState<string | null>('tk', () => sessionStorage.getItem('TOKEN'))
-export const useUser = () => {
-  return useState<UserData | null>(
-    'user',
-    () => JSON.parse(sessionStorage.getItem('DATA')) || defaultUserData
-  )
-}
-
-interface UserData {
+export interface UserData {
   id?: number
   username?: string,
   email?: string,
@@ -21,3 +13,6 @@ const defaultUserData: UserData = {
   email: '',
   phone: '00212',
 }
+
+export const useToken = () => useState<string | null>('tk', () => sessionStorage.getItem('TOKEN'))
+export const useUser = () => JSON.parse(sessionStorage.getItem('DATA')) || JSON.parse(JSON.stringify(defaultUserData))

@@ -4,11 +4,11 @@ const apiUrl = useApiUrl();
 const token = useToken();
 const password = ref('');
 const handleSubmit = async () => {
-  const data = await fetch(`${apiUrl.value}/login`, {
+  const data = await fetch(`${apiUrl}/login`, {
     headers: { "Content-Type": "application/json" },
     method: "POST",
     body: JSON.stringify({
-      email: user.value.email,
+      email: user.email,
       password: password.value
     })
   }).then(res => res.json()).catch(err => console.error(err));
