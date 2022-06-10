@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS voltr;
 use voltr;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE OR REPLACE TABLE  users (
   id INT AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -13,17 +13,17 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS categories (
+CREATE OR REPLACE TABLE categories (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   category varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS cities (
+CREATE OR REPLACE TABLE cities (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   city VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS items (
+CREATE OR REPLACE TABLE items (
   id INT NOT NULL AUTO_INCREMENT,
   title VARCHAR(60),
   description TEXT(250),
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS items (
   category_id INT,
   city_id INT NOT NULL,
   address TEXT,
+  status ENUM('default','reserved','deleted','archived') DEFAULT 1,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(id),
@@ -40,20 +41,34 @@ CREATE TABLE IF NOT EXISTS items (
   FOREIGN KEY(city_id) REFERENCES cities(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS items_images (
+CREATE OR REPLACE TABLE items_images (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   image TEXT,
   item_id INT NOT NULL,
   FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS saved_items (
+CREATE OR REPLACE TABLE saved_items (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   item_id INT NOT NULL,
   user_id INT NOT NULL,
   FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE OR REPLACE TABLE reserved_items (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  item_id INT NOT NULL,
+  user_id INT NOT NULL,
+  take_at INT NOT NULL,
+  description TEXT,
+  FOREIGN KEY(item_id) REFERENCES items(id),
+  FOREIGN KEY(user_id) REFERENCES users(id)
+)
+
+CREATE DEFINER = CURRENT_USER TRIGGER reserve_item 
+  AFTER INSERT ON reserved_items FOR EACH ROW 
+  UPDATE items SET items.status = 'reserved' WHERE items.id = new.item_id; 
 
 INSERT INTO users ( id, username, email, phone, password) VALUES 
   ( 1, 'emaduo', 'adim@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
@@ -78,6 +93,3 @@ INSERT INTO cities (city) VALUES
   ('tata'),
   ('errachidia');
 
-INSERT INTO items (title, description, category_id, city_id, address, author_id) VALUES 
-  ('books', 'I have some used books in littirature, they are in a good status', 1,1,'ain sbe3', 1),
-  ('shuter island', 'leonardo decaprio makes prefect again, this thing gonna hurt your brain for a while', 1, 2, 'soussi', 2);
