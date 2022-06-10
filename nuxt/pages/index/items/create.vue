@@ -57,29 +57,29 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-4">
-    <FormKit v-if="step == 1" :preserve="true" type="form" v-model="formData" @submit="submitItem">
-      <FormKit type="text" name="title" validation="required|length:5" placeholder="title" label="Title" />
-      <FormKit type="textarea" name="description" placeholder="this is a ..." validation="required|length:15"
-        label="Description" />
-      <FormKit type="file" name="tmp_cover" label="Cover Photo" accept=".png,.jepg,.jpg,.webp"
-        help="image to be shown as cover" />
-      <FormKit type="select" name="category" label="Choose a category" :options="categories" validation="required" />
-      <FormKit type="select" name="city" label="Choose a city" :options="cities" validation="required" />
-      <FormKit type="textarea" name="address" label="address" placeholder="cartier, ZIP..." />
-    </FormKit>
-    <FormKit v-else v-model="itemImages" :actions="false" :preserve="true" type="form" @submit="submitImages">
-      <FormKit type="file" name="images" label="Item images"
-        help="choose up to 5 images (hold ctrl for multiple select!)" multiple />
-      <div class="flex gap-2 items-center">
-        <FormKit type="submit">Upload</FormKit>
-        <button class="w-24 ring-1 ring-primary-500 p-4 rounded-md focus:shadow-lg hover:shadow-lg text-primary-500"
-          @click="step = 1">
-          back</button>
-        <p class="ml-auto">step: 2/2</p>
-      </div>
-      <pre>{{ formData }}</pre>
-      <pre>{{ itemImages }}</pre>
-    </FormKit>
+  <div class="mt-4 w-full flex justify-center">
+    <div class="lg:w-[45rem] w-full">
+      <FormKit v-if="step == 1" :preserve="true" type="form" v-model="formData" @submit="submitItem">
+        <FormKit type="text" name="title" validation="required|length:5" placeholder="title" label="Title" />
+        <FormKit type="textarea" name="description" placeholder="this is a ..." validation="required|length:15"
+          label="Description" />
+        <FormKit type="file" name="tmp_cover" label="Cover Photo" accept=".png,.jepg,.jpg,.webp"
+          help="image to be shown as cover" />
+        <FormKit type="select" name="category" label="Choose a category" :options="categories" validation="required" />
+        <FormKit type="select" name="city" label="Choose a city" :options="cities" validation="required" />
+        <FormKit type="textarea" name="address" label="address" placeholder="cartier, ZIP..." />
+      </FormKit>
+      <FormKit v-else v-model="itemImages" :actions="false" :preserve="true" type="form" @submit="submitImages">
+        <FormKit type="file" name="images" label="Item images"
+          help="choose up to 5 images (hold ctrl for multiple select!)" multiple />
+        <div class="flex gap-2 items-center">
+          <FormKit type="submit">Upload</FormKit>
+          <button class="w-24 ring-1 ring-primary-500 p-4 rounded-md focus:shadow-lg hover:shadow-lg text-primary-500"
+            @click="step = 1">
+            back</button>
+          <p class="ml-auto">step: 2/2</p>
+        </div>
+      </FormKit>
+    </div>
   </div>
 </template>
