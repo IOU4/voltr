@@ -1,23 +1,23 @@
 <script setup lang="ts">
-const user = useUser();
+import { AlertType } from '~~/composables/useAlert';
+
 const apiUrl = useApiUrl();
-const token = useToken();
 const password = ref('');
+const user = useUser();
 const handleSubmit = async () => {
+  const cAlert = useAlert();
   const data = await fetch(`${apiUrl}/login`, {
     headers: { "Content-Type": "application/json" },
     method: "POST",
     body: JSON.stringify({
-      email: user.email,
+      email: user.data.email,
       password: password.value
     })
   }).then(res => res.json()).catch(err => console.error(err));
-  if (data?.error) alert(data?.error || 'wrong credetials');
+  if (data?.error) cAlert.value.showAlert(`error: ${data?.error}`, AlertType.FAIL);
   else {
-    user.value = data.user;
-    token.value = 'token';
-    sessionStorage.setItem('TOKEN', token.value);
-    sessionStorage.setItem('DATA', JSON.stringify(data.user));
+    user.setUser(data.user)
+    cAlert.value.showAlert('lggedin succefully', AlertType.SUCCESS);
     navigateTo('/');
   }
 }
@@ -30,7 +30,7 @@ const handleSubmit = async () => {
       quis porro. Magni,
       cupiditate.</p>
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <CInput label="email" type="email" placeholder="jhon doe" v-model="user.email" required />
+      <CInput label="email" type="email" placeholder="jhon doe" v-model="user.data.email" required />
       <CInput label="password" type="password" placeholder="*****" v-model="password" required />
       <div class="flex justify-between">
         <input type="submit" value="SingIn"

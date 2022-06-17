@@ -2,9 +2,10 @@
 import { type Item } from '~~/composables/useItem';
 
 const items = useItems();
-const api_url = useApiUrl();
+
 onMounted(async () => {
-  const data: Item[] = await fetch(`${api_url}/items`).then(res => res.json());
+  const api_url = useApiUrl();
+  const data: Item[] = await fetch(`${api_url}/items?status=active`).then(res => res.json());
   items.value = data;
 })
 </script>
@@ -19,8 +20,9 @@ onMounted(async () => {
       <Item v-for="item in items" :key="item.id" :item="item" />
     </div>
 
-    <div class="flex items-center justify-center fixed bottom-6 w-screen">
-      <nuxt-link to="/items/create" class="item-button hover:bg-white bg-primary-500  group">
+    <div class=" fixed bottom-6 left-0 right-0 w-screen pointer-events-none">
+      <nuxt-link to="/items/create"
+        class="btn-outline flex space-x-2 hover:bg-white bg-primary-500 mx-auto w-fit group pointer-events-auto">
         <span class="group-hover:text-primary-700 text-white ">create one</span>
         <IconsPlus class="w-6 h-6" stroke="group-hover:stroke-primary-600 stroke-white" />
       </nuxt-link>

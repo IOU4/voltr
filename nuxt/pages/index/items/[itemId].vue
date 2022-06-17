@@ -9,6 +9,15 @@ const route = useRoute();
 const api_url = useApiUrl();
 definePageMeta({ pageTransition: true })
 const itemsImages = await useFetch<ItemImage[]>(`${api_url}/item/images?id=${route.params.itemId}`).then(res => res.data);
+const showSave = ref(false)
+
+const handleResreve = () => {
+  const showReserve = useShowReserve();
+  showReserve.value = true;
+}
+const handleSave = () => {
+  showSave.value = true;
+}
 </script>
 
 <template>
@@ -19,7 +28,7 @@ const itemsImages = await useFetch<ItemImage[]>(`${api_url}/item/images?id=${rou
     <!-- carousel -->
     <carousel :items-to-show="1">
       <slide v-for="image in [{ id: 0, image: item.cover }, ...itemsImages]" :key="image.id"
-        class="w-[98%] h-80 lg:h-[75vh] bg-primary-50 flex justify-center items-center rounded-md overflow-hidden">
+        class="w-[98%] h-80 lg:h-[75vh] bg-slate-100 flex justify-center items-center rounded-md overflow-hidden">
         <img :src="`http://localhost/imgs/${image.image}`" class="max-h-full max-w-full" draggable="false">
       </slide>
 
@@ -61,27 +70,28 @@ const itemsImages = await useFetch<ItemImage[]>(`${api_url}/item/images?id=${rou
 
       <!-- actions -->
       <div class="flex space-x-2">
-        <button class="item-button group ">
+        <button class="btn-outline space-x-2 flex flex group" @click="handleResreve">
           <span class="text-primary-700 text-sm group-hover:text-white ">Reserve</span>
           <IconsArrowR class="w-5 h-5" stroke="stroke-primary-600 group-hover:stroke-white" />
         </button>
-        <button class="item-button group">
+        <button class="btn-outline space-x-2 flex flex group">
           <span class="text-primary-700 text-sm group-hover:text-white ">Message</span>
           <IconsChat class="h-5 w-5" stroke="stroke-primary-600 group-hover:stroke-white" />
         </button>
-        <button class="item-button group">
+        <button class="btn-outline space-x-2 flex flex group" @click="handleSave">
           <span class="text-primary-700 text-sm group-hover:text-white ">Save</span>
           <IconsTag class="h-5 w-5" stroke="stroke-primary-600 group-hover:stroke-white" />
         </button>
       </div>
 
       <!-- phone -->
-      <button class="item-button hover:bg-white bg-primary-500  group">
+      <button class="btn-outline space-x-2 flex flex hover:bg-white bg-primary-500  group">
         <span class="group-hover:text-primary-700 text-sm text-white ">palaceholder</span>
         <IconsPhone class="w-5 h-5" stroke="group-hover:stroke-primary-600 stroke-white" />
       </button>
     </div>
   </div>
+  <Save :show="showSave" @close="showSave = false" />
 </template>
 
 <style lang="postcss">

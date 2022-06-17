@@ -1,11 +1,18 @@
 <script setup lang="ts">
-const isListVisible = ref<boolean>(false);
-const isNotifVisible = ref<boolean>(false);
-const isProfileVisible = ref<boolean>(false);
+const menu = useNav();
+const headerRef = ref(null)
+const handleLogout = () => {
+  const router = useRouter();
+  const user = useUser();
+  user.setUser();
+  router.push('/auth')
+}
+onClickOutside(headerRef, () => menu.value.setMenu())
 </script>
 
 <template>
-  <header class="w-full fixed top-0 right-0 px-4 flex justify-between bg-white items-center shadow-md z-10">
+  <header ref="headerRef"
+    class="w-full fixed top-0 right-0 px-4 flex justify-between bg-white items-center shadow-md z-10">
     <!-- logo  -->
     <div class="logo w-20 h-20">
       <img src="~assets/logo.png" alt="voltr logo">
@@ -16,45 +23,44 @@ const isProfileVisible = ref<boolean>(false);
 
     <!-- profile -->
     <div class="flex gap-4 items-center">
-      <IconsList class="icon" stroke="stroke-primary-600" :class="isListVisible ? 'bg-primary-100 p-1 rounded-md' : ''"
-        @click="isListVisible = !isListVisible ; isNotifVisible = false; isProfileVisible = false" />
+      <IconsList class="icon" stroke="stroke-primary-600" :class="menu.nav ? 'bg-primary-100 p-1 rounded-md' : ''"
+        @click="menu.setMenu('nav')" />
       <IconsNotif class="icon" stroke="stroke-primary-600"
-        :class="isNotifVisible ? 'bg-primary-100 p-1 rounded-md' : 'fill-white'"
-        @click="isNotifVisible = !isNotifVisible; isListVisible = false; isProfileVisible = false" />
-      <div class="profile-img"
-        @click="isProfileVisible = !isProfileVisible; isListVisible = false; isNotifVisible = false" />
+        :class="menu.notification ? 'bg-primary-100 p-1 rounded-md' : 'fill-white'"
+        @click="menu.setMenu('notification')" />
+      <div class="profile-img" @click="menu.setMenu('profile')" />
     </div>
 
     <!-- notifications  -->
     <transition>
-      <div v-show="isNotifVisible" class="floating-nav">
+      <div v-show="menu.notification" class="floating-nav">
         notifications
       </div>
     </transition>
 
     <!-- nav -->
     <transition>
-      <nav v-show="isListVisible" class="floating-nav">
+      <nav v-show="menu.nav" class="floating-nav">
         <nuxt-link to="/">home</nuxt-link>
-        <nuxt-link to="/auth">camps</nuxt-link>
-        <nuxt-link to="/auth">profile</nuxt-link>
-        <nuxt-link to="/auth">
+        <nuxt-link to="/camps">camps</nuxt-link>
+        <nuxt-link to="/profile">profile</nuxt-link>
+        <button @click="handleLogout">
           <IconsLogout class="w-5 h-5" />
-        </nuxt-link>
+        </button>
       </nav>
     </transition>
 
     <!-- profile-menu -->
     <transition>
-      <div v-show="isProfileVisible" class="floating-nav">
-        profile
+      <div v-show="menu.profile" class="floating-nav">
+        <ProfileMenu />
       </div>
     </transition>
   </header>
 </template>
 
 <style scoped lang="postcss">
-.router-link-active {
+.router-link-exact-active {
   @apply underline decoration-primary-400 underline-offset-4 decoration-2 text-primary-600;
 }
 </style>

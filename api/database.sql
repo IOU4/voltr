@@ -60,15 +60,30 @@ CREATE OR REPLACE TABLE reserved_items (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   item_id INT NOT NULL,
   user_id INT NOT NULL,
-  take_at INT NOT NULL,
+  take_at DATETIME,
   description TEXT,
-  FOREIGN KEY(item_id) REFERENCES items(id),
-  FOREIGN KEY(user_id) REFERENCES users(id)
-)
+  status VARCHAR(100) default 'pending',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
-CREATE DEFINER = CURRENT_USER TRIGGER reserve_item 
+CREATE DEFINER=CURRENT_USER TRIGGER `reserve_item`
   AFTER INSERT ON reserved_items FOR EACH ROW 
-  UPDATE items SET items.status = 'reserved' WHERE items.id = new.item_id; 
+  UPDATE items SET items.status = 'pending_reserve' WHERE items.id = new.item_id; 
+
+CREATE DEFINER=CURRENT_USER TRIGGER `unreserve_item` 
+  AFTER DELETE ON `reserved_items` FOR EACH ROW 
+  UPDATE items SET items.status = 'active' WHERE items.id = old.item_id;
+
+CREATE DEFINER=CURRENT_USER TRIGGER `aprove_or_reject_reserve` 
+  AFTER UPDATE ON reserved_items
+  FOR EACH ROW 
+  IF new.status = 'rejected' THEN 
+    UPDATE items SET items.status = 'active' WHERE items.id = new.item_id;
+  ELSEIF new.status = 'accepted' THEN 
+    UPDATE items SET items.status = 'reserved' WHERE items.id = new.item_id;
+  END IF;
 
 INSERT INTO users ( id, username, email, phone, password) VALUES 
   ( 1, 'emaduo', 'adim@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
@@ -92,4 +107,3 @@ INSERT INTO cities (city) VALUES
   ('berkane'),
   ('tata'),
   ('errachidia');
-

@@ -1,3 +1,6 @@
+import { Alert } from "~~/.nuxt/components";
+import { AlertType } from "./useAlert";
+
 export enum Categories {
   BOOKS = 'books',
   ELECTRONICS = "electronics"
@@ -34,11 +37,15 @@ export interface Item {
   category?: Categories,
   city?: Cities,
   address?: string,
+  status?: string,
   created_at?: string,
   updated_at?: string,
+  reserver_id?: number,
+  reserver_name?: string,
+  reserved_at?: string,
+  reserve_description?: string,
   tmp_cover?: TmpCover[]
 }
-
 export const defaultItem: Item = {
   id: 0,
   title: 'books',
@@ -56,5 +63,43 @@ export interface ItemImage {
   image?: string
 }
 
+export interface ReserveData {
+  take_at: string,
+  description?: string,
+}
+
 export const useItem = () => useState<Item>('item', () => JSON.parse(sessionStorage.getItem('ITEM')) ?? defaultItem);
 export const useItems = () => useState<Item[]>('items', () => JSON.parse(sessionStorage.getItem('ITEMS')) ?? []);
+export const useShowReserve = () => useState<boolean>('showReserve', () => false);
+
+export async function useDeleteItem(itemId: number) {
+  const filter = useFilter();
+  const apiUrl = useApiUrl();
+  const cAlert = useAlert();
+  fetch(`${apiUrl}/item`, {
+    method: "delete",
+    body: JSON.stringify({ id: itemId })
+  }).then(res => {
+    if (res.ok) {
+      filter.value.getFiltredItems();
+      cAlert.value.showAlert('item deleted succefully', AlertType.SUCCESS)
+    }
+    else cAlert.value.showAlert("couldn't delete item", AlertType.FAIL)
+  })
+}
+
+export async function useRejectItem(itemId: number, isReject: boolean = true) {
+  const filter = useFilter();
+  const apiUrl = useApiUrl();
+  const cAlert = useAlert();
+  fetch(`${apiUrl}/item/${isReject ? 'reject' : 'accept'}`, {
+    method: 'post',
+    body: JSON.stringify({ item_id: itemId })
+  }).then(res => {
+    if (res.ok) {
+      filter.value.getFiltredItems();
+      cAlert.value.showAlert(`The reservation request has been ${isReject ? 'rejected' : 'accepted'}!`, AlertType.SUCCESS);
+    } else cAlert.value.showAlert("coudn't complete the operation", AlertType.FAIL);
+  })
+}
+export async function useAcceptItem(itemId: number) { useRejectItem(itemId, false); }

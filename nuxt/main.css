@@ -29,7 +29,7 @@ body {
 }
 
 * {
-  @apply focus:outline-none focus:ring-1 focus:ring-primary-500 active:appearance-none
+  @apply focus:outline-none focus:ring-1 focus:ring-primary-500 
 }
 
 .icon {
@@ -51,21 +51,65 @@ body {
 }
 
 .floating-nav {
-  @apply absolute -bottom-16 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-lg;
+  @apply absolute top-24 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-lg;
 }
 
-.item-button {
-  @apply ring-1 ring-primary-500 p-2 rounded-md flex gap-2 transition-colors;
+@layer base {
+    .modal {
+      @apply fixed w-screen h-screen bg-slate-800 bg-opacity-10 z-40 inset-0 flex justify-center items-center;
+    }
+}
+.modal-enter-from {
+  opacity: 0;
 }
 
-.item-button:hover {
-  @apply bg-primary-500;
+.modal-leave-to {
+  opacity: 0;
 }
 
-/* @layer base { */
-/*     .before-clip-path { */
-/*       ::before { */
-/*         clip-path:  */
-/*       } */
-/*     } */
-/*   } */
+.modal-enter-from .modal,
+.modal-leave-to .modal {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.height-enter-active,
+.height-leave-active {
+  transition: all 0.25s linear;
+}
+
+.height-enter-from {
+  opacity: 0;
+  height: 0;
+}
+
+.height-leave-to {
+  opacity: 0;
+  height: auto;
+}
+
+.btn {
+  @apply p-3 ring-1 ring-primary-500 rounded-md text-white bg-primary-500 transition-colors hover:bg-white hover:text-primary-500
+}
+
+.btn-outline {
+  @apply p-3 ring-1 ring-primary-500 rounded-md text-primary-800 transition-colors hover:bg-primary-500 hover:text-white
+}
+
+.btn-danger {
+  @apply p-3 ring-1 ring-red-400 rounded-md text-white bg-red-400 transition-colors hover:bg-white hover:text-red-400
+}

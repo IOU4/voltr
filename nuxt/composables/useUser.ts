@@ -7,6 +7,12 @@ export interface UserData {
   created_at?: Date
 }
 
+interface UserUserInterface {
+  data: UserData,
+  token: string | null,
+  setUser: (User?: UserData | null) => void
+}
+
 const defaultUserData: UserData = {
   id: null,
   username: '',
@@ -14,5 +20,20 @@ const defaultUserData: UserData = {
   phone: '00212',
 }
 
-export const useToken = () => useState<string | null>('tk', () => sessionStorage.getItem('TOKEN'))
-export const useUser = () => JSON.parse(sessionStorage.getItem('DATA')) || JSON.parse(JSON.stringify(defaultUserData))
+export const useUser: () => UserUserInterface = function() {
+  return {
+    data: JSON.parse(sessionStorage.getItem('DATA')) || JSON.parse(JSON.stringify(defaultUserData)),
+    token: sessionStorage.getItem('TOKEN'),
+    setUser(user: UserData = null) {
+      if (!user) {
+        this.data = defaultUserData;
+        sessionStorage.removeItem('TOKEN');
+        sessionStorage.removeItem('DATA');
+        return;
+      }
+      this.data = user;
+      sessionStorage.setItem('TOKEN', 'token');
+      sessionStorage.setItem('DATA', JSON.stringify(user));
+    }
+  }
+}

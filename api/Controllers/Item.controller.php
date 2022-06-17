@@ -42,19 +42,44 @@ class Item
     }
   }
 
-  public static function all()
+  public static function all($query)
   {
+    $user_id = $status = null;
+    if (!empty($query['user'])) $user_id = $query['user'];
+    if (!empty($query['status'])) $status = $query['status'];
     $model = new ItemModel();
-    echo json_encode($model->fetch_all());
+    try {
+      $items = $model->fetch_all($user_id, $status);
+      echo json_encode($items);
+    } catch (Throwable $e) {
+      echo json_encode($e->getMessage());
+    }
+  }
+
+  public static function fetch_reserved($query)
+  {
+    $user_id = $status = null;
+    $author = false;
+    if (!empty($query['user'])) $user_id = $query['user'];
+    if (!empty($query['status'])) $status = $query['status'];
+    if (isset($query['author'])) $author = true;
+    $model = new ItemModel();
+    try {
+      $items = $model->fetch_all_reserved($user_id, $status, $author);
+      echo json_encode($items);
+    } catch (Throwable $e) {
+      echo json_encode($e->getMessage());
+    }
   }
 
   public function delete()
   {
-    if (empty($this->id)) exit('no id for delete');
     try {
+      if (empty($this->id)) throw new Exception('no id for delete');
       $this->model->delete($this->id);
       echo json_encode(['deleted' => true]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
+      http_response_code(400);
       echo json_encode($e->getMessage());
     }
   }
@@ -92,6 +117,52 @@ class Item
       echo json_encode(['created' => true, 'item' => $item]);
     } catch (Throwable $th) {
       echo json_encode(['created' => false, 'error' => $th->getMessage()]);
+    }
+  }
+
+  public function reserve($data)
+  {
+    try {
+      if (!isset($data['take_at'], $data['user_id'], $this->id)) throw new Exception('no data');
+      if (empty($data['description'])) $data['description'] = null;
+      $item = $this->model->get_item_by_id($this->id);
+      if ($item['status'] != 'active') throw new Exception('already reserved');
+      if ($item['author_id'] == $data['user_id']) throw new Exception("can't reserve your own item");
+      $this->model->reserve($data);
+      echo json_encode(['reserved' => true, 'item' => $item]);
+    } catch (Throwable $th) {
+      echo json_encode(['reserved' => false, 'error' => $th->getMessage()]);
+    }
+  }
+
+  public function save($user_id)
+  {
+    if (!isset($user_id, $this->id)) exit('no sufficant data');
+    try {
+      $item = $this->model->get_saved_item($this->id, $user_id);
+      if ($item) {
+        http_response_code(400);
+        exit(json_encode(['reserved' => false, 'error' => 'already saved']));
+      }
+      $this->model->save($user_id, $this->id);
+      $item = $this->model->get_saved_item($this->id, $user_id);
+      echo json_encode(['reserved' => true, 'item' => $item]);
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode(['reserved' => false, 'error' => $th->getMessage()]);
+    }
+  }
+
+  public static function update_reservation(array $data, bool $is_accepted = true)
+  {
+    try {
+      if (!isset($data['item_id'])) throw new Exception('no enough data provided');
+      $model = new ItemModel();
+      $model->update_reservation($data['item_id'], $is_accepted);
+      echo (json_encode([$is_accepted ? 'accepted' : 'rejected' => true]));
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
     }
   }
 

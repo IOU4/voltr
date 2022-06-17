@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AlertType } from "~~/composables/useAlert";
 import { Cities, Item, Categories } from "~~/composables/useItem";
 
 interface ItemImages {
@@ -13,11 +14,12 @@ const categories = ref<Categories[]>([]);
 const cities = ref<Cities[]>([]);
 const step = ref(1);
 const api_url = useApiUrl();
-const { id } = useUser();
+const { data: { id } } = useUser();
 const router = useRouter();
 
 const submitItem = async () => {
   const data = new FormData();
+  const cAlert = useAlert();
   for (const key in formData) {
     if (key == 'tmp_cover' && formData.tmp_cover.length) {
       data.append('cover', formData[key][0].file);
@@ -25,7 +27,7 @@ const submitItem = async () => {
     }
     data.append(key, formData[key]);
   }
-  data.append('author_id', id);
+  data.append('author_id', id.toString());
   fetch(`${api_url}/item/create`, {
     method: 'post',
     body: data
@@ -33,24 +35,33 @@ const submitItem = async () => {
     if (data.created) {
       formData.id = data.item.id;
       step.value = 2;
+      cAlert.value.showAlert('Item created succefylly', AlertType.SUCCESS)
     }
-    else alert(`error occured: ${JSON.stringify(data.errors)}`)
+    else cAlert.value.showAlert(`error occured: ${JSON.stringify(data.errors)}`, AlertType.SUCCESS)
   });
 }
 
 const submitImages = () => {
   const data = new FormData();
+  const cAlert = useAlert();
   itemImages?.images.forEach((img, index) => data.append(`img-${index}`, img.file));
   data.append('id', formData.id.toString());
   fetch(`${api_url}/item/images`, {
     method: 'post',
     body: data
-  }).then(res => res.json()).then(data => { if (data?.stored) router.push('/') })
+  }).then(res => res.json()).then(data => {
+    if (data?.stored) {
+      cAlert.value.showAlert('Item Images uploaded succefylly!', AlertType.SUCCESS)
+      router.push('/')
+    }
+    else cAlert.value.showAlert("error occured!", AlertType.FAIL);
+  }
+  )
 }
 
 onMounted(async () => {
-  const ctgrs = await fetch('http://localhost/api/categories').then(res => res.json()) as Categories[]
-  const cts = await fetch('http://localhost/api/cities').then(res => res.json()) as Cities[]
+  const ctgrs = await fetch(`${api_url}/categories`).then(res => res.json()) as Categories[]
+  const cts = await fetch(`${api_url}/cities`).then(res => res.json()) as Cities[]
   categories.value = ctgrs;
   cities.value = cts;
 });

@@ -1,21 +1,6 @@
 version: "3"
 
 services: 
-  # dev:
-  #   image: node:16-alpine
-  #   container_name: developement
-  #   command: sh -c "npm run dev"
-  #   ports:
-  #     - 3000:3000
-  #   working_dir: /app/nuxt
-  #   volumes:
-  #     - ./nuxt:/app/nuxt
-  #   environment:
-  #     MYSQL_HOST: database
-  #     MYSQL_USER: root
-  #     MYSQL_PASSWORD:
-  #     MYSQL_DB: voltr
-
   server:
     container_name: server
     build: ./nginx
@@ -46,3 +31,11 @@ services:
       - .:/app
     expose:
       - 9000
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=database

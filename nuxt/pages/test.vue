@@ -1,17 +1,13 @@
-<script setup lang="ts">
-const counter = useCount();
-const otherCounter = useOtherCount();
-const { data, pending, error, refresh } = await useFetch(
-  'https://api.nuxtjs.dev/mountains',
-)
-
+<script setup>
+const open = ref(false);
 </script>
-
 <template>
-  <div>Counter: {{ counter }}</div>
-  <div>Counter: {{ otherCounter }}</div>
-  <div>
-    <button class="font-mono" @click="counter++"> + </button>
-    <button class="font-mono" @click="otherCounter++"> + </button>
-  </div>
+  <button @click="open = true">Open Modal</button>
+
+  <Teleport to="body">
+    <div v-if="open" class="modal">
+      <p>Hello from the modal!</p>
+      <button @click="open = false">Close</button>
+    </div>
+  </Teleport>
 </template>

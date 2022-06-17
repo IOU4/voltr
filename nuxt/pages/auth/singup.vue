@@ -1,27 +1,29 @@
 <script setup lang="ts">
+import { AlertType } from '~~/composables/useAlert';
+
 const user = useUser();
-const token = useToken();
 const password = ref('');
 const passwordConfirmation = ref('');
 const apiUrl = useApiUrl();
 const hadleSubmit = async () => {
-  if (passwordConfirmation.value != password.value) return alert('password not match');
+  const cAlert = useAlert();
+  if (passwordConfirmation.value != password.value) return cAlert.value.showAlert("password confirmation deosn't match", AlertType.FAIL);
   const data = await fetch(`${apiUrl}/singup`, {
     method: "POST",
     body: JSON.stringify({
-
+      "email": user.data.email,
+      "username": user.data.username,
+      "phone": user.data.phone,
+      "password": password.value
     }),
     headers: { "Content-Type": "application/json" }
   }).then(res => res.json()).catch(err => console.error(err));
-  if (!data?.logged) alert(data?.error || 'error occured');
+  if (!data?.logged) cAlert.value.showAlert(`error occured: ${data?.error}`, AlertType.FAIL);
   else {
-    user.value = data.user;
-    token.value = 'token';
-    sessionStorage.setItem('TOKEN', token.value);
-    sessionStorage.setItem('DATA', JSON.stringify(data.user));
+    user.setUser(data.user);
+    cAlert.value.showAlert(`account created succefully, welcome ${user.data.username} !!`, AlertType.SUCCESS);
     navigateTo('/');
   }
-  console.log(data);
 }
 </script>
 <template>
@@ -31,10 +33,10 @@ const hadleSubmit = async () => {
       quis porro. Magni,
       cupiditate.</p>
     <form @submit.prevent="hadleSubmit" class="space-y-4">
-      <CInput label="username" placeholder="jhon doe" v-model="user.username" required />
-      <CInput label="email" placeholder="jhondoe@example.com" type="email" v-model="user.email" required />
-      <CInput label="phone number" placeholder="002120------" type="tel" v-model="user.phone" required />
-      <CInput label="password" placeholder="*****" span="only alphanumeric" type="password" v-model="user.password"
+      <CInput label="username" placeholder="jhon doe" v-model="user.data.username" required />
+      <CInput label="email" placeholder="jhondoe@example.com" type="email" v-model="user.data.email" required />
+      <CInput label="phone number" placeholder="002120------" type="tel" v-model="user.data.phone" required />
+      <CInput label="password" placeholder="*****" span="only alphanumeric" type="password" v-model="password"
         required />
       <CInput label="confirm_password" placeholder="*****" type="password" v-model="passwordConfirmation" required />
       <div class="flex justify-between">

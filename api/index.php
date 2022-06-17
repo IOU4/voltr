@@ -38,10 +38,17 @@ $app->post('/item/create', function ($data) {
   $item = new Item(null);
   $item->create($data);
 });
-$app->delete('/item', function ($data) {
-  $item = new Item($data['id'] ?? null);
-  $item->delete();
+$app->post('/item/reserve', function ($data) {
+  $item = new Item($data['item_id'] ?? null);
+  $item->reserve($data);
 });
+$app->post('/item/save', function ($data) {
+  $item = new Item($data['item_id'] ?? null);
+  $item->save($data['user_id']);
+});
+$app->get('/items/reserved', 'Item::fetch_reserved');
+$app->post('/item/reject', fn ($data) => Item::update_reservation($data, false));
+$app->post('/item/accept', fn ($data) => Item::update_reservation($data, true));
 
 
 // catergories
@@ -51,7 +58,7 @@ $app->get('/categories', 'Category::all');
 $app->get('/cities', 'City::all');
 
 
-
-exit(json_encode('no matches found'));
+http_response_code(400);
+echo (json_encode('no matches found'));
 session_unset();
 session_destroy();

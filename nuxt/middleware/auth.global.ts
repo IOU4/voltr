@@ -1,4 +1,6 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const token = useToken()
-  if (token.value == null && !to.path.match(/\/auth\/?.*/)) return navigateTo('/auth');
+  const { token } = useUser()
+  const nav = useNav();
+  nav.value.setMenu();
+  if (token == null && !to.path.match(/\/auth\/?.*/)) return navigateTo('/auth');
 })
