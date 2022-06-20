@@ -1,4 +1,4 @@
-import { Alert } from "~~/.nuxt/components";
+import { Item } from "~~/.nuxt/components";
 import { AlertType } from "./useAlert";
 
 export enum Categories {
@@ -33,6 +33,8 @@ export interface Item {
   description?: string,
   author_id?: number,
   author_name?: string,
+  author_photo?: string,
+  author_phone?: string,
   cover?: string,
   category?: Categories,
   city?: Cities,
@@ -44,6 +46,8 @@ export interface Item {
   reserver_name?: string,
   reserved_at?: string,
   reserve_description?: string,
+  reserve_status?: string,
+  saved?: boolean | null,
   tmp_cover?: TmpCover[]
 }
 export const defaultItem: Item = {
@@ -72,8 +76,7 @@ export const useItem = () => useState<Item>('item', () => JSON.parse(sessionStor
 export const useItems = () => useState<Item[]>('items', () => JSON.parse(sessionStorage.getItem('ITEMS')) ?? []);
 export const useShowReserve = () => useState<boolean>('showReserve', () => false);
 
-export async function useDeleteItem(itemId: number) {
-  const filter = useFilter();
+export async function useDeleteItem(itemId: number, isInHome: boolean = false) {
   const apiUrl = useApiUrl();
   const cAlert = useAlert();
   fetch(`${apiUrl}/item`, {
@@ -81,8 +84,9 @@ export async function useDeleteItem(itemId: number) {
     body: JSON.stringify({ id: itemId })
   }).then(res => {
     if (res.ok) {
-      filter.value.getFiltredItems();
       cAlert.value.showAlert('item deleted succefully', AlertType.SUCCESS)
+      const filter = useFilter();
+      isInHome ? useFetchItems() : filter.value.getFiltredItems();
     }
     else cAlert.value.showAlert("couldn't delete item", AlertType.FAIL)
   })
@@ -103,3 +107,72 @@ export async function useRejectItem(itemId: number, isReject: boolean = true) {
   })
 }
 export async function useAcceptItem(itemId: number) { useRejectItem(itemId, false); }
+
+export async function useUpdateItem(updateData: Item, isInHome: boolean = false) {
+  const cAlert = useAlert();
+  const apiUrl = useApiUrl();
+  fetch(`${apiUrl}/item`, {
+    method: 'PATCH',
+    body: JSON.stringify(updateData),
+    headers: {
+      "content-type": "application/json"
+    }
+  }).then(async (res) => {
+    if (res.ok) {
+      cAlert.value.showAlert('Item updated succefully!', AlertType.SUCCESS);
+      const filter = useFilter();
+      isInHome ? useFetchItems() : filter.value.getFiltredItems();
+      const newItem = await res.json();
+      sessionStorage.setItem('ITEM', JSON.stringify(newItem));
+      const item = useItem();
+      item.value = newItem;
+    }
+    else cAlert.value.showAlert('error occured!', AlertType.FAIL);
+  })
+}
+
+export async function useGetCities() {
+  const apiUrl = useApiUrl();
+  return await fetch(`${apiUrl}/cities`).then(res => res.json()) as Cities[]
+}
+
+export async function useGetCategories() {
+  const apiUrl = useApiUrl();
+  return await fetch(`${apiUrl}/categories`).then(res => res.json()) as Categories[]
+}
+
+export async function useFetchItems() {
+  const apiUrl = useApiUrl();
+  const items = useItems();
+  await fetch(`${apiUrl}/items?status=active`).then<Item[]>(res => res.json()).then(data => items.value = data);
+}
+
+export async function useItemImages(itemId: number | string) {
+  const apiUrl = useApiUrl();
+  return await useFetch<ItemImage[]>(`${apiUrl}/item/images?id=${itemId}`).then(res => res.data);
+}
+
+export async function useGetItem(itemId: number | string) {
+  const apiUrl = useApiUrl();
+  const { data: { id: user_id } } = useUser();
+  const res = await fetch(`${apiUrl}/item?id=${itemId}&user=${user_id}`).then(res => res.json()) as Item;
+  return res;
+}
+
+export async function useFetchSavedItems() {
+  const apiUrl = useApiUrl();
+  const { data: { id: user_id } } = useUser();
+  return await fetch(`${apiUrl}/items/saved?user=${user_id}`).then<Item[]>(async res => {
+    if (res.ok) return await res.json();
+    else return [];
+  }) as Item[];
+}
+
+export async function useFetchReservedItems() {
+  const apiUrl = useApiUrl();
+  const { data: { id: user_id } } = useUser();
+  return await fetch(`${apiUrl}/items/all_reserved?user=${user_id}`).then<Item[]>(async res => {
+    if (res.ok) return await res.json();
+    else return [];
+  }) as Item[];
+}

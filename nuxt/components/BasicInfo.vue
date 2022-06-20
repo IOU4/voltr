@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { UserData } from '~~/composables/useUser';
 
-const user = useUser();
-const newUser = ref<UserData>(user.data)
+interface Props {
+  user?: UserData | null
+}
+let { user = null } = defineProps<Props>();
+const { data: loggedUser } = useUser();
+const newUser = ref<UserData>(user ?? loggedUser)
 const filterMenu = useFilterMenu();
 const isDiabled = ref(true);
 const handleUpdate = () => console.log('changeUser');
 const handleCancel = () => {
   if (isDiabled.value) return isDiabled.value = false;
-  newUser.value = user.data;
+  newUser.value = user ?? loggedUser;
   isDiabled.value = true;
 }
 
@@ -30,11 +34,11 @@ const handleCancel = () => {
           validation="matches:/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/" :validation-messages="{
             matches: 'Phone number must be in the format xxx-xxx-xxxx',
           }" validation-visibility="dirty" />
-        <div class="flex space-x-2">
+        <div class="flex space-x-2" v-if="!user">
           <FormKit type="submit" :disabled="isDiabled">Update</FormKit>
-          <Transition name="slide" mode="out-in">
-            <button v-if="isDiabled" class="btn-outline " @click.prevent="handleCancel">Edit</button>
-            <button v-else class="btn-outline " @click.prevent="handleCancel">Cancel</button>
+          <Transition name="slide-up" mode="out-in">
+            <button v-if="isDiabled" class="btn-outline" @click.prevent="handleCancel">Edit</button>
+            <button v-else class="btn-outline" @click.prevent="handleCancel">Cancel</button>
           </Transition>
         </div>
       </FormKit>

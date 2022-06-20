@@ -10,9 +10,11 @@ const { item = defaultItem, isReserve = false } = defineProps<Props>();
 const showReserve = useShowReserve();
 const { data: { id: user_id } } = useUser();
 const storedItem = useItem();
+const route = useRoute();
 const confirmDelete = ref(false);
 const confirmReject = ref(false);
 const confirmAccept = ref(false);
+const confirmUpdate = ref(false);
 
 const updateStateItem = () => {
   storedItem.value = item;
@@ -25,8 +27,7 @@ const handleReserve = () => {
 }
 const handleAccept = () => { useAcceptItem(item.id); confirmAccept.value = false }
 const handleReject = () => { useRejectItem(item.id); confirmReject.value = false }
-const handleUpdate = () => { console.log('handleDelete') }
-const handleDelete = () => { useDeleteItem(item.id); confirmDelete.value = false }
+const handleDelete = () => { useDeleteItem(item.id, route.path == '/'); confirmDelete.value = false }
 </script>
 
 <template>
@@ -47,15 +48,14 @@ const handleDelete = () => { useDeleteItem(item.id); confirmDelete.value = false
         <p class="text-sm text-primary-700">{{ item.description }}</p>
       </div>
     </NuxtLink>
-    <div class="flex space-x-2 p-4" v-if="!isReserve && item.author_id != user_id">
+
+    <div v-if="!isReserve && item.author_id != user_id && item.status == 'active'" class=" p-4">
       <button class="btn-outline flex space-x-2 group " @click="handleReserve">
         <span class="text-primary-700 text-sm group-hover:text-white ">reserve</span>
         <IconsArrowR class="w-5 h-5" stroke="stroke-primary-600 group-hover:stroke-white" />
       </button>
-      <button class="btn-outline group">
-        <IconsChat class="h-5 w-5" stroke="stroke-primary-600 group-hover:stroke-white" />
-      </button>
     </div>
+
     <div v-else-if="item.reserver_id && isReserve" class="p-4 space-y-2">
       <div class="mb-3">
         <p class="text-sm text-primary-500"> reservation info:</p>
@@ -70,11 +70,12 @@ const handleDelete = () => { useDeleteItem(item.id); confirmDelete.value = false
       <button class="btn mr-3" @click="confirmAccept = true"> accept</button>
       <button class="btn-danger" @click="confirmReject = true">reject</button>
     </div>
-    <div v-if="item.author_id == user_id && item.status != 'pending_reserve'"
-      class="p-4 flex justify-end absolute bottom-1 right-1">
-      <button class="btn mr-3" @click="handleUpdate">Update</button>
+
+    <div v-if="item.author_id == user_id && item.status != 'pending_reserve'" class="p-4 flex justify-end ">
+      <button class="btn mr-3" @click="confirmUpdate = true">Update</button>
       <button class="btn-danger" @click="confirmDelete = true">Delete</button>
     </div>
+
     <Modal :show="confirmDelete" @close="confirmDelete = false">
       <p class="text-xl my-3">confirm item delete?</p>
       <div class="flex ">
@@ -96,5 +97,10 @@ const handleDelete = () => { useDeleteItem(item.id); confirmDelete.value = false
         <button class="btn-outline" @click="confirmReject = false">Cancel</button>
       </div>
     </Modal>
+    <Modal :show="confirmUpdate" @close="confirmUpdate = false">
+      <UpdateItem :item="item" @close="confirmUpdate = false" />
+    </Modal>
+    <p class="ring-1 ring-primary-300 text-primary-300 rounded-lg p-1 absolute text-xs bottom-2 right-2">{{ item.status
+    }}</p>
   </div>
 </template>

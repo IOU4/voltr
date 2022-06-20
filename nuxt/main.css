@@ -51,7 +51,7 @@ body {
 }
 
 .floating-nav {
-  @apply absolute top-24 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-lg;
+  @apply absolute top-24 right-4 flex items-center py-4 px-3 gap-4 bg-primary-100 rounded-md shadow-lg text-lg;
 }
 
 @layer base {
@@ -72,17 +72,17 @@ body {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
-.slide-enter-active,
-.slide-leave-active {
+.slide-up-enter-active,
+.slide-up-leave-active {
   transition: all 0.25s ease-out;
 }
 
-.slide-enter-from {
+.slide-up-enter-from {
   opacity: 0;
   transform: translateY(30px);
 }
 
-.slide-leave-to {
+.slide-up-leave-to {
   opacity: 0;
   transform: translateY(-30px);
 }
@@ -103,13 +103,17 @@ body {
 }
 
 .btn {
-  @apply p-3 ring-1 ring-primary-500 rounded-md text-white bg-primary-500 transition-colors hover:bg-white hover:text-primary-500
+  @apply p-3 ring-1 ring-primary-500 rounded-md text-white bg-primary-500 transition-all hover:bg-white hover:text-primary-500
 }
 
 .btn-outline {
-  @apply p-3 ring-1 ring-primary-500 rounded-md text-primary-800 transition-colors hover:bg-primary-500 hover:text-white
+  @apply p-3 ring-1 ring-primary-500 rounded-md text-primary-800 transition-all hover:bg-primary-500 hover:text-white
 }
 
 .btn-danger {
-  @apply p-3 ring-1 ring-red-400 rounded-md text-white bg-red-400 transition-colors hover:bg-white hover:text-red-400
+  @apply p-3 ring-1 ring-red-400 rounded-md text-white bg-red-400 transition-all hover:bg-white hover:text-red-400
+}
+
+.btn-disabled {
+  @apply p-3 ring-1 ring-disabled rounded-md text-disabled bg-slate-100 transition-all pointer-events-none;
 }

@@ -1,12 +1,6 @@
 <script setup lang="ts">
 const menu = useNav();
 const headerRef = ref(null)
-const handleLogout = () => {
-  const router = useRouter();
-  const user = useUser();
-  user.setUser();
-  router.push('/auth')
-}
 onClickOutside(headerRef, () => menu.value.setMenu())
 </script>
 
@@ -40,14 +34,9 @@ onClickOutside(headerRef, () => menu.value.setMenu())
 
     <!-- nav -->
     <transition>
-      <nav v-show="menu.nav" class="floating-nav">
-        <nuxt-link to="/">home</nuxt-link>
-        <nuxt-link to="/camps">camps</nuxt-link>
-        <nuxt-link to="/profile">profile</nuxt-link>
-        <button @click="handleLogout">
-          <IconsLogout class="w-5 h-5" />
-        </button>
-      </nav>
+      <div v-show="menu.nav" class="floating-nav text-lg">
+        <PageMenu />
+      </div>
     </transition>
 
     <!-- profile-menu -->

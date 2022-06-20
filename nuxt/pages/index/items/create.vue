@@ -10,8 +10,8 @@ interface ItemImages {
 }
 const formData: Item = {};
 const itemImages: ItemImages = {};
-const categories = ref<Categories[]>([]);
-const cities = ref<Cities[]>([]);
+const categories = await useGetCategories();
+const cities = await useGetCities();
 const step = ref(1);
 const api_url = useApiUrl();
 const { data: { id } } = useUser();
@@ -58,13 +58,6 @@ const submitImages = () => {
   }
   )
 }
-
-onMounted(async () => {
-  const ctgrs = await fetch(`${api_url}/categories`).then(res => res.json()) as Categories[]
-  const cts = await fetch(`${api_url}/cities`).then(res => res.json()) as Cities[]
-  categories.value = ctgrs;
-  cities.value = cts;
-});
 </script>
 
 <template>

@@ -5,6 +5,8 @@ class User
   private ?int $id = null;
   private ?string $username;
   private ?string $email;
+  private ?string $phone;
+  private ?string $photo;
   // private ?string $password;
   private UserModel $model;
 
@@ -18,6 +20,7 @@ class User
     $this->username = $db_data['username'];
     $this->email = $db_data['email'];
     $this->phone = $db_data['phone'];
+    $this->photo = $db_data['photo'];
   }
 
   private function get_user_by_id(int $id)
@@ -37,7 +40,8 @@ class User
     $user_data = array(
       'username' => $this->username,
       'email' => $this->email,
-      // 'phone' => $this->phone
+      'phone' => $this->phone,
+      'photo' => $this->photo,
     );
     echo json_encode($user_data);
   }
@@ -91,6 +95,19 @@ class User
       echo json_encode(['deleted' => true]);
     } catch (Exception $e) {
       echo json_encode($e->getMessage());
+    }
+  }
+
+  public static function totals($query)
+  {
+    try {
+      if (empty($query['user'])) throw new Error('no user provided');
+      $user_id = $query['user'];
+      $model = new UserModel();
+      echo json_encode($model->totals($user_id));
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
     }
   }
 }

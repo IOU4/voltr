@@ -6,6 +6,8 @@ class ItemModel extends Database
     $query = "select 
     items.*, 
     users.username as author_name,
+    users.photo as author_photo,
+    users.phone as author_phone,
     categories.category,
     cities.city
     from items 
@@ -18,12 +20,11 @@ class ItemModel extends Database
       $query .= ' where author_id = ?';
       $params[] = $user_id;
     }
-    if ($user_id && $status) {
-      $query .= ' and status = ?';
+    if ($status) {
+      $query .= $user_id ? ' and status = ?' : ' where status = ?';
       $params[] = $status;
     }
-    $res = $this->execStatement($query, $params);
-    return $res->fetch_all(MYSQLI_ASSOC);
+    return $this->execStatement($query, $params)->fetch_all(MYSQLI_ASSOC);
   }
 
   function get_item_by_id(int $id): ?array
@@ -130,6 +131,23 @@ class ItemModel extends Database
     return $this->execStatement($query, $params)->fetch_all(MYSQLI_ASSOC);
   }
 
+  function fetch_reserved(int $user_id)
+  {
+    $query = 'select
+    items.*, 
+    users.username as author_name, 
+    categories.category, 
+    cities.city ,
+    reserved_items.status as reserve_status
+    from reserved_items 
+    join items on item_id = items.id 
+    join users on author_id = users.id 
+    join categories on category_id = categories.id  
+    join cities on city_id = cities.id 
+    where reserved_items.user_id = ?';
+    $params = array($user_id);
+    return $this->execStatement($query, $params)->fetch_all(MYSQLI_ASSOC);
+  }
 
   function fetch_all_reserved(int $user_id, string $status, bool $author = false): array
   {
@@ -163,5 +181,57 @@ class ItemModel extends Database
     $query = 'update reserved_items set status = ? where item_id = ?';
     $params = array($status, $item_id);
     $this->execStatement($query, $params);
+  }
+
+  function update(array $data)
+  {
+    $query = 'update items set
+    title = ?, 
+    description = ?,
+    city_id = (select id from cities where city = ?),
+    category_id = (select id from categories where category = ?),
+    address = ? 
+    where id = ?
+    ';
+    $params = array(
+      $data['title'],
+      $data['description'],
+      $data['city'],
+      $data['category'],
+      $data['address'],
+      $data['id']
+    );
+    $this->execStatement($query, $params);
+  }
+
+  function fetch_full_item(int $item_id)
+  {
+    $query = 'select
+    items.*, 
+    users.username as author_name, 
+    users.photo as author_photo,
+    users.phone as author_phone,
+    categories.category, 
+    cities.city
+    from items 
+    join users on author_id = users.id 
+    join cities on city_id = cities.id 
+    join categories on category_id = categories.id  
+    where items.id = ?';
+    $params = array($item_id);
+    return $this->execStatement($query, $params)->fetch_assoc();
+  }
+  function fetch_reserved_item(int $item_id)
+  {
+    $query = "select users.id as reserver_id, users.username as reserver_name, reserved_items.created_at as reserved_at, reserved_items.description as reserve_description from reserved_items join users on reserved_items.user_id = users.id join items on item_id = items.id where items.id=? ";
+    $params = array($item_id);
+    return $this->execStatement($query, $params)->fetch_assoc();
+  }
+
+  function check_is_save(int $item_id, int $user_id)
+  {
+    $query = "select 'saved' from saved_items where item_id = ? and user_id =  ?";
+    $params = array($item_id, $user_id);
+    return $this->execStatement($query, $params)->fetch_assoc();
   }
 }

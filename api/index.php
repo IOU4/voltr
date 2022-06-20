@@ -16,12 +16,14 @@ $app->delete('/user', function ($data) {
   $user = new User($data['id'] ?? null);
   $user->delete();
 });
+$app->get('/user/totals', 'User::totals');
 $app->post('/login', 'User::login');
 $app->post('/singup', 'User::singup');
 
 
 // items
 $app->get('/items', 'Item::all');
+$app->get('/item', 'Item::fetch_full_item');
 $app->delete('/item', function ($data) {
   $item = new Item($data['id'] ?? null);
   $item->delete();
@@ -38,6 +40,10 @@ $app->post('/item/create', function ($data) {
   $item = new Item(null);
   $item->create($data);
 });
+$app->patch('/item', function ($data) {
+  $item = new Item($data['id'] ?? null);
+  $item->update($data);
+});
 $app->post('/item/reserve', function ($data) {
   $item = new Item($data['item_id'] ?? null);
   $item->reserve($data);
@@ -49,6 +55,8 @@ $app->post('/item/save', function ($data) {
 $app->get('/items/reserved', 'Item::fetch_reserved');
 $app->post('/item/reject', fn ($data) => Item::update_reservation($data, false));
 $app->post('/item/accept', fn ($data) => Item::update_reservation($data, true));
+$app->get('/items/saved', 'Item::fetch_all_saved');
+$app->get('/items/all_reserved', 'Item::fetch_all_reserved');
 
 
 // catergories

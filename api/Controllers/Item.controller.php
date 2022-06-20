@@ -3,14 +3,6 @@
 class Item
 {
   private int $id;
-  private string $title;
-  private string $description;
-  private ?int $author_id;
-  private ?string $author_name;
-  private ?string $cover;
-  private string $category;
-  private string $city;
-  private string $address;
   private ItemModel $model;
   const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp'];
 
@@ -108,14 +100,15 @@ class Item
 
   public function create(array $data)
   {
-    $this->validate_data($data);
     try {
+      $this->validate_data($data);
       if (isset($_FILES['cover'])) $cover = $this->store_single_image($_FILES['cover'], true);
       $data['cover'] = $cover ?? null;
       $this->model->create($data);
       $item = $this->model->get_last_inserted_item();
       echo json_encode(['created' => true, 'item' => $item]);
     } catch (Throwable $th) {
+      http_response_code(400);
       echo json_encode(['created' => false, 'error' => $th->getMessage()]);
     }
   }
@@ -137,19 +130,29 @@ class Item
 
   public function save($user_id)
   {
-    if (!isset($user_id, $this->id)) exit('no sufficant data');
     try {
+      if (!isset($user_id, $this->id)) throw new Error('no sufficant data');
       $item = $this->model->get_saved_item($this->id, $user_id);
-      if ($item) {
-        http_response_code(400);
-        exit(json_encode(['reserved' => false, 'error' => 'already saved']));
-      }
+      if ($item) throw new Error('already saved');
       $this->model->save($user_id, $this->id);
       $item = $this->model->get_saved_item($this->id, $user_id);
-      echo json_encode(['reserved' => true, 'item' => $item]);
+      echo json_encode(['saved' => true, 'item' => $item]);
     } catch (Throwable $th) {
       http_response_code(400);
-      echo json_encode(['reserved' => false, 'error' => $th->getMessage()]);
+      echo json_encode(['saved' => false, 'error' => $th->getMessage()]);
+    }
+  }
+
+  public function update(array $data)
+  {
+    try {
+      $data['author_id'] = '0';
+      $this->validate_data($data);
+      $this->model->update($data);
+      echo json_encode($this->model->get_item_by_id($this->id));
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
     }
   }
 
@@ -189,7 +192,7 @@ class Item
     if (!isset($data['city'])) $errors['city'] = 'no city';
     if (!isset($data['address'])) $errors['address'] = 'no address';
     if (!isset($data['author_id'])) $errors['author_id'] = 'no author_id';
-    if (count($errors)) exit(json_encode(['created' => false, 'errors' => $errors]));
+    if (count($errors)) throw new Exception(json_encode(['errors' => $errors]));
   }
 
   private function store_single_image(array $image, bool $isCover): string|bool
@@ -211,6 +214,55 @@ class Item
     } catch (Throwable $e) {
       echo json_encode($e->getMessage());
       return false;
+    }
+  }
+
+  public static function fetch_full_item($query)
+  {
+    try {
+      if (empty($query['id'])) throw new Error('no id provided');
+      $item_id = $query['id'];
+      $model = new ItemModel();
+      $item = $model->fetch_full_item($item_id);
+      $reseved = array();
+      if ($item['status'] == 'pending_reserve') $reseved = $model->fetch_reserved_item($item_id);
+      $saved = $user_id = null;
+      if (!empty($query['user'])) {
+        $user_id = $query['user'];
+        $saved = ($model->check_is_save($item_id, $user_id)) ? true : false;
+      }
+      echo json_encode([...$item, ...$reseved, 'saved' => $saved]);
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_decode($th->getMessage());
+    }
+  }
+
+  public static function fetch_all_saved($query)
+  {
+    try {
+      if (empty($query['user'])) throw new Error('no user provided');
+      $user_id = $query['user'];
+      $model = new ItemModel();
+      $items = $model->fetch_all_saved($user_id);
+      echo json_encode($items);
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
+    }
+  }
+
+  public static function fetch_all_reserved($query)
+  {
+    try {
+      if (empty($query['user'])) throw new Error('no user provided');
+      $user_id = $query['user'];
+      $model = new ItemModel();
+      $items = $model->fetch_reserved($user_id);
+      echo json_encode($items);
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
     }
   }
 }

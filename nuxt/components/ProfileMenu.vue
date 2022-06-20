@@ -2,7 +2,7 @@
 const user = useUser();
 </script>
 <template>
-  <div class="flex flex-col space-y-6">
+  <div class="flex flex-col space-y-6 w-64">
     <h3 class="text-xl">{{ user.data.username }} &ThickSpace;<span class="wave">👋</span></h3>
     <div class="flex flex-col gap-y-3">
       <nuxt-link class="link" to='/profile'>
@@ -27,7 +27,7 @@ const user = useUser();
 
 <style scoped lang="postcss">
 .link {
-  @apply text-sm text-primary-800 flex items-center space-x-4 rounded-md
+  @apply text-lg text-primary-800 flex items-center space-x-4 rounded-md
 }
 
 .link:hover {

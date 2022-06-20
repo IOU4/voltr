@@ -3,7 +3,6 @@ export interface UserData {
   username?: string,
   email?: string,
   phone?: string,
-  password?: string | null,
   created_at?: Date
 }
 
@@ -36,4 +35,27 @@ export const useUser: () => UserUserInterface = function() {
       sessionStorage.setItem('DATA', JSON.stringify(user));
     }
   }
+}
+
+interface Totals {
+  items?: number,
+  active?: number,
+  reserved?: number,
+  reservations?: number
+}
+
+export async function useUserTotals(userId: number | string) {
+  const apiUrl = useApiUrl();
+  return await fetch(`${apiUrl}/user/totals?user=${userId}`).then<Totals>(async res => {
+    if (res.ok) return await res.json();
+    else return {};
+  });
+}
+
+export async function useGetUser(userId: number | string) {
+  const apiUrl = useApiUrl();
+  return await fetch(`${apiUrl}/user?id=${userId}`).then<UserData>(async res => {
+    if (res.ok) return await res.json();
+    else return {};
+  });
 }
