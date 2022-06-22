@@ -4,14 +4,14 @@ const user = useUser();
 <template>
   <div class="flex flex-col space-y-6 w-64">
     <h3 class="text-xl">{{ user.data.username }} &ThickSpace;<span class="wave">👋</span></h3>
-    <div class="flex flex-col gap-y-3">
+    <div class="flex flex-col gap-y-2">
       <nuxt-link class="link" to='/profile'>
         <IconsPerson class="w-6 h-6" />
         <span>My profile</span>
       </nuxt-link>
       <nuxt-link class="link" to='/profile/items'>
         <IconsList class="w-6 h-6" />
-        <span>All items</span>
+        <span>All My items</span>
       </nuxt-link>
       <nuxt-link class="link" to='/profile/saved'>
         <IconsTag class="w-6 h-6" />
@@ -27,7 +27,7 @@ const user = useUser();
 
 <style scoped lang="postcss">
 .link {
-  @apply text-lg text-primary-800 flex items-center space-x-4 rounded-md
+  @apply text-lg text-primary-800 flex items-center space-x-4 rounded-md p-2
 }
 
 .link:hover {

@@ -5,25 +5,27 @@ import { DateTime } from 'luxon';
 definePageMeta({ pageTransition: true })
 
 const route = useRoute();
-const item = await useGetItem(route.params.itemId as string);
+const router = useRouter();
+const item = ref(await useGetItem(route.params.itemId as string));
 const itemsImages = await useItemImages(route.params.itemId as string);
 const showSave = ref(false)
 const confirmDelete = ref(false);
 const confirmUpdate = ref(false);
 const confirmReject = ref(false);
 const confirmAccept = ref(false);
-const handleDelete = () => { useDeleteItem(item.id); confirmDelete.value = false }
-const handleAccept = () => { useAcceptItem(item.id); confirmAccept.value = false }
-const handleReject = () => { useRejectItem(item.id); confirmReject.value = false }
+const handleDelete = () => { useDeleteItem(item.value.id); confirmDelete.value = false; router.back() }
+const handleAccept = () => { useAcceptItem(item.value.id); confirmAccept.value = false }
+const handleReject = () => { useRejectItem(item.value.id); confirmReject.value = false }
 
 const handleResreve = () => {
   const showReserve = useShowReserve();
   showReserve.value = true;
 }
 const handleSave = () => {
-
   showSave.value = true;
 }
+
+const refreshItem = async () => item.value = await useGetItem(route.params.itemId as string);
 
 const { data: { id: user_id } } = useUser();
 </script>
@@ -104,10 +106,9 @@ const { data: { id: user_id } } = useUser();
       </div>
     </div>
   </div>
-
-  <Save :show="showSave" @close="showSave = false" />
+  <Save :show="showSave" @close="() => { showSave = false; refreshItem() }" />
   <Modal :show="confirmUpdate" @close="confirmUpdate = false">
-    <UpdateItem :item="item" @close="confirmUpdate = false" />
+    <UpdateItem :item="item" @close="confirmUpdate = false" @upd="refreshItem" />
   </Modal>
   <Modal :show="confirmDelete" @close="confirmDelete = false">
     <p class="text-xl my-3">confirm item delete?</p>
@@ -130,6 +131,7 @@ const { data: { id: user_id } } = useUser();
       <button class="btn-outline" @click="confirmReject = false">Cancel</button>
     </div>
   </Modal>
+  <Reserve @upd="refreshItem" />
 </template>
 
 <style lang="postcss">

@@ -9,6 +9,7 @@ const reserveData = ref<ReserveData>({
   description: ''
 });
 const confirmReserve = ref(false);
+const emit = defineEmits(['upd'])
 
 const handleSubmit = async () => {
   const cAlert = useAlert();
@@ -22,6 +23,7 @@ const handleSubmit = async () => {
   if (res?.reserved) cAlert.value.showAlert('item reserved succesfuly', AlertType.SUCCESS)
   else cAlert.value.showAlert(`failed: ${res.error}`, AlertType.FAIL)
   confirmReserve.value = false;
+  emit('upd')
 }
 
 </script>

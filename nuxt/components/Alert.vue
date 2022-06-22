@@ -8,8 +8,8 @@ const bg = computed(() => {
       return 'bg-red-300';
     case AlertType.SUCCESS:
       return 'bg-emerald-300';
-    case AlertType.FAIL:
-      return 'bg-blue-300';
+    case AlertType.INFO:
+      return 'bg-indigo-300';
   }
 })
 </script>

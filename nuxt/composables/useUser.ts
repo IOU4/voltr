@@ -1,3 +1,5 @@
+import { AlertType } from "./useAlert"
+
 export interface UserData {
   id?: number
   username?: string,
@@ -58,4 +60,26 @@ export async function useGetUser(userId: number | string) {
     if (res.ok) return await res.json();
     else return {};
   });
+}
+
+export async function useGetUsers() {
+  const apiUrl = useApiUrl();
+  return fetch(`${apiUrl}/users`).then<UserData[]>(res => {
+    if (res.ok) return res.json();
+    else return [];
+  })
+}
+
+export async function useDeleteUser(userId: number | string) {
+  const apiUrl = useApiUrl();
+  return fetch(`${apiUrl}/user`, {
+    method: 'delete',
+    body: JSON.stringify({ id: userId })
+  }).then(res => {
+    const cAlert = useAlert();
+    if (res.ok) {
+      cAlert.value.showAlert("user deleted successfully!", AlertType.SUCCESS);
+    }
+    else cAlert.value.showAlert("couldn't delete user!", AlertType.FAIL);
+  })
 }

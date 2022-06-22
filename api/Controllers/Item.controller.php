@@ -265,4 +265,16 @@ class Item
       echo json_encode($th->getMessage());
     }
   }
+
+  public function approve_or_reject_item(string $status)
+  {
+    try {
+      if (empty($this->id)) throw new Error('no id');
+      if (in_array($status, ['approve', 'refuse'])) throw new Error("can't update to the specified status");
+      $this->model->approve_or_refuse_item($this->id, $status);
+    } catch (Throwable $th) {
+      http_response_code(400);
+      echo json_encode($th->getMessage());
+    }
+  }
 }

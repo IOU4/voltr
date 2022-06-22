@@ -6,28 +6,38 @@ interface Props {
   item?: Item,
   isReserve?: boolean,
 }
+const emit = defineEmits(['upd'])
 const { item = defaultItem, isReserve = false } = defineProps<Props>();
 const showReserve = useShowReserve();
 const { data: { id: user_id } } = useUser();
 const storedItem = useItem();
-const route = useRoute();
 const confirmDelete = ref(false);
 const confirmReject = ref(false);
 const confirmAccept = ref(false);
 const confirmUpdate = ref(false);
 
-const updateStateItem = () => {
-  storedItem.value = item;
-  sessionStorage.setItem("ITEM", JSON.stringify(item));
-}
 const handleReserve = () => {
   storedItem.value = item;
   sessionStorage.setItem('ITEM', JSON.stringify(item));
   showReserve.value = true;
 }
-const handleAccept = () => { useAcceptItem(item.id); confirmAccept.value = false }
-const handleReject = () => { useRejectItem(item.id); confirmReject.value = false }
-const handleDelete = () => { useDeleteItem(item.id, route.path == '/'); confirmDelete.value = false }
+const handleAccept = () => {
+  useAcceptItem(item.id);
+  confirmAccept.value = false
+}
+const handleReject = () => {
+  useRejectItem(item.id);
+  confirmReject.value = false
+}
+const handleDelete = async () => {
+  await useDeleteItem(item.id);
+  confirmDelete.value = false
+  emit('upd');
+}
+const updateStateItem = () => {
+  storedItem.value = item;
+  sessionStorage.setItem("ITEM", JSON.stringify(item));
+}
 </script>
 
 <template>
@@ -98,9 +108,10 @@ const handleDelete = () => { useDeleteItem(item.id, route.path == '/'); confirmD
       </div>
     </Modal>
     <Modal :show="confirmUpdate" @close="confirmUpdate = false">
-      <UpdateItem :item="item" @close="confirmUpdate = false" />
+      <UpdateItem :item="item" @close="confirmUpdate = false" @upd="$emit('upd')" />
     </Modal>
-    <p class="ring-1 ring-primary-300 text-primary-300 rounded-lg p-1 absolute text-xs bottom-2 right-2">{{ item.status
-    }}</p>
+    <p class="ring-1 ring-primary-300 text-primary-300 rounded-lg p-1 absolute text-xs bottom-2 right-2">
+      {{ item.status }}
+    </p>
   </div>
 </template>

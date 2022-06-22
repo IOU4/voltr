@@ -48,7 +48,7 @@ onClickOutside(headerRef, () => menu.value.setMenu())
   </header>
 </template>
 
-<style scoped lang="postcss">
+<style lang="postcss">
 .router-link-exact-active {
   @apply underline decoration-primary-400 underline-offset-4 decoration-2 text-primary-600;
 }

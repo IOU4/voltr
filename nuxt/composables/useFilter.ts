@@ -6,9 +6,9 @@ interface Option {
 }
 const options: Option[] = [
   { label: 'All Items', value: 'all' },
-  { label: 'Approval Pending Items', value: 'pending_approval' },
+  { label: 'Approval Pending Items', value: 'pending_approve' },
   { label: 'Active/Approved Items', value: 'active' },
-  { label: 'Rejected Items', value: 'rejected' },
+  { label: 'Rejected Items', value: 'refused' },
   { label: 'Reserve Pending Items', value: 'pending_reserve' },
   { label: 'Reserved Items', value: 'reserved' }
 ]

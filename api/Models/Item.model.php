@@ -234,4 +234,11 @@ class ItemModel extends Database
     $params = array($item_id, $user_id);
     return $this->execStatement($query, $params)->fetch_assoc();
   }
+
+  function approve_or_refuse_item(int $item_id, string $status)
+  {
+    $query = "update items set items.status = ? where items.id = ?";
+    $params = array($status, $item_id);
+    $this->execStatement($query, $params);
+  }
 }

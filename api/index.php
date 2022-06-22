@@ -55,6 +55,14 @@ $app->post('/item/save', function ($data) {
 $app->get('/items/reserved', 'Item::fetch_reserved');
 $app->post('/item/reject', fn ($data) => Item::update_reservation($data, false));
 $app->post('/item/accept', fn ($data) => Item::update_reservation($data, true));
+$app->post('/item/approve', function ($data) {
+  $item = new Item($data['item'] ?? null);
+  $item->approve_or_reject_item('active');
+});
+$app->post('/item/refuse', function ($data) {
+  $item = new Item($data['item']);
+  $item->approve_or_reject_item('refused');
+});
 $app->get('/items/saved', 'Item::fetch_all_saved');
 $app->get('/items/all_reserved', 'Item::fetch_all_reserved');
 

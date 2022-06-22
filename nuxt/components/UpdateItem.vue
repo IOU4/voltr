@@ -13,14 +13,14 @@ const updateData: Item = {
   city: item.city,
   address: item.address
 }
-const route = useRoute();
 const cities = await useGetCities();
 const categories = await useGetCategories();
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'upd']);
 const confirmUpdate = ref(false);
 const handleSubmit = async () => {
-  await useUpdateItem(updateData, route.path == '/');
+  await useUpdateItem(updateData);
   emit('close');
+  emit('upd');
 }
 </script>
 
