@@ -2,16 +2,16 @@ version: "3"
 services:
   server:
     container_name: server
-    build: ./nginx
+    build: .
     ports:
       - 80:80
     links:
       - php
-    volumes:
-      - voltr_db:/app
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
   database:
-    image: mariadb:10.9
+    image: voltr/database
+    build:
+      context: .
+      dockerfile: ./db.Dockerfile
     container_name: database
     ports:
       - 3306:3306
@@ -21,8 +21,11 @@ services:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
       MARIADB_ALLOW_EMPTY_PASSWORD: yes
     volumes:
-      - ./api/db:/var/lib/mysql
-      - ./api/database.sql:/docker-entrypoint-initdb.d/database.sql
+      - source: voltr_db
+        target: /var/lib/mysql
+        type: volume
+        volume:
+          nocopy: true
   php:
     build:
       context: ./api
@@ -31,4 +34,3 @@ services:
       - 9000
 volumes:
   voltr_db:
-    driver: local

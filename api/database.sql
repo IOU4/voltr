@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS voltr;
 use voltr;
 
-CREATE OR REPLACE TABLE  users (
+CREATE TABLE  users (
   id INT AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -13,17 +13,17 @@ CREATE OR REPLACE TABLE  users (
   PRIMARY KEY(id)
 );
 
-CREATE OR REPLACE TABLE categories (
+CREATE TABLE categories (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   category varchar(255)
 );
 
-CREATE OR REPLACE TABLE cities (
+CREATE TABLE cities (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   city VARCHAR(255)
 );
 
-CREATE OR REPLACE TABLE items (
+CREATE TABLE items (
   id INT NOT NULL AUTO_INCREMENT,
   title VARCHAR(60),
   description TEXT(250),
@@ -32,7 +32,7 @@ CREATE OR REPLACE TABLE items (
   category_id INT,
   city_id INT NOT NULL,
   address TEXT,
-  status ENUM('default','reserved','deleted','archived') DEFAULT 1,
+  status ENUM('default','reserved','deleted','archived') DEFAULT 'default',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(id),
@@ -41,14 +41,14 @@ CREATE OR REPLACE TABLE items (
   FOREIGN KEY(city_id) REFERENCES cities(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE OR REPLACE TABLE items_images (
+CREATE TABLE items_images (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   image TEXT,
   item_id INT NOT NULL,
   FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE OR REPLACE TABLE saved_items (
+CREATE TABLE saved_items (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   item_id INT NOT NULL,
   user_id INT NOT NULL,
@@ -56,7 +56,7 @@ CREATE OR REPLACE TABLE saved_items (
   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE OR REPLACE TABLE reserved_items (
+CREATE TABLE reserved_items (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
   item_id INT NOT NULL,
   user_id INT NOT NULL,
@@ -76,14 +76,21 @@ CREATE DEFINER=CURRENT_USER TRIGGER `unreserve_item`
   AFTER DELETE ON `reserved_items` FOR EACH ROW 
   UPDATE items SET items.status = 'active' WHERE items.id = old.item_id;
 
+DELIMITER //
 CREATE DEFINER=CURRENT_USER TRIGGER `aprove_or_reject_reserve` 
-  AFTER UPDATE ON reserved_items
-  FOR EACH ROW 
-  IF new.status = 'rejected' THEN 
-    UPDATE items SET items.status = 'active' WHERE items.id = new.item_id;
-  ELSEIF new.status = 'accepted' THEN 
-    UPDATE items SET items.status = 'reserved' WHERE items.id = new.item_id;
-  END IF;
+  AFTER UPDATE ON `reserved_items` FOR EACH ROW 
+  BEGIN
+    IF new.status = 'rejected' THEN
+      UPDATE items
+      SET status = 'active'
+      WHERE id = new.item_id;
+    ELSEIF NEW.status = 'accepted' THEN
+      UPDATE items
+      SET status = 'reserved'
+      WHERE id = new.item_id;
+    END IF;
+  END//
+DELIMITER ;
 
 INSERT INTO users ( id, username, email, phone, password) VALUES 
   ( 1, 'emaduo', 'adim@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
