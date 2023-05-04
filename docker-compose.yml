@@ -29,3 +29,6 @@ services:
     container_name: phpcgi
     expose:
       - 9000
+volumes:
+  voltr_db:
+    driver: local
