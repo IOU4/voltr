@@ -1,18 +1,17 @@
 version: "3"
 services:
-  server:
-    container_name: voltr_server
-    build: .
+  app:
+    container_name: voltr_app
+    image: emadou/voltr-app:0.1
     ports:
       - 80:80
     links:
       - php
-  database:
-    image: voltr/database
-    build:
-      context: .
-      dockerfile: ./db.Dockerfile
-    container_name: voltr_database
+    volumes:
+      - ./api/uploaded/imgs:/app/api/uploaded/imgs
+  db:
+    container_name: voltr_db
+    image: emadou/voltr-db:0.1
     ports:
       - 3306:3306
     environment:
@@ -21,15 +20,12 @@ services:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
       MARIADB_ALLOW_EMPTY_PASSWORD: yes
     volumes:
-      - source: voltr_db
-        target: /var/lib/mysql
-        type: volume
-        volume:
-          nocopy: true
+      - voltr_db:/var/lib/mysql
   phpcgi:
-    build:
-      context: ./api
     container_name: voltr_phpcgi
+    image: emadou/voltr-php:0.1
+    volumes:
+      - ./api/uploaded/imgs:/app/api/uploaded/imgs
     expose:
       - 9000
 volumes:
