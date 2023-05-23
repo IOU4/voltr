@@ -3,7 +3,7 @@ interface Props {
   user_id?: string
 }
 const { data: { id: logged_user_id } } = useUser();
-const { user_id = 0 } = defineProps<Props>();
+const { user_id = '0' } = defineProps<Props>();
 const totals = await useUserTotals(user_id || logged_user_id);
 </script>
 <template>

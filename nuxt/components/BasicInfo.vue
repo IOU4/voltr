@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { UserData } from '~~/composables/useUser';
+import { User } from '~~/composables/useUser';
 
 interface Props {
-  user?: UserData | null
+  user?: User | null
 }
 let { user = null } = defineProps<Props>();
 const { data: loggedUser } = useUser();
-const newUser = ref<UserData>(user ?? loggedUser)
+const newUser = ref<User>(user ?? loggedUser)
 const filterMenu = useFilterMenu();
 const isDiabled = ref(true);
 const handleUpdate = () => console.log('changeUser');

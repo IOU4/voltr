@@ -1,21 +1,22 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "build": "nuxi build --prerender --dotenv .env",
+    "dev": "nuxi dev --doten .env.dev",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "dokcerb": "docker buildx build -t emadou/voltr-app:0.1",
+    "dockerp": "docker push emadou/voltr-app:0.1"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.1.4",
     "@tailwindcss/forms": "^0.5.2",
     "@tailwindcss/typography": "^0.5.2",
     "@types/luxon": "^2.3.2",
-    "@vueuse/core": "^8.6.0",
-    "@vueuse/nuxt": "^8.6.0",
+    "@vueuse/nuxt": "^9.13.0",
     "autoprefixer": "^10.4.7",
     "luxon": "^2.4.0",
-    "nuxt": "3.0.0-rc.3",
+    "nuxt": "^3.4.3",
     "postcss": "^8.4.13",
     "tailwindcss": "^3.0.24"
   },

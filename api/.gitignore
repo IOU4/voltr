@@ -1,4 +1,5 @@
 vendor/
 db/
 .env
-uploaded/
+uploaded/imgs/*
+!uploaded/imgs/placeholder.jpg

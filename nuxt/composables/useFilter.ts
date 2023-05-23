@@ -22,13 +22,12 @@ interface FilterState {
 }
 const apiUrl = useApiUrl();
 const { data: { id: user_id } } = useUser();
-const FilterObj = {
+const filterObj: FilterState = {
   option: options[0].value,
   filtredItems: [],
   setOption(opt: number) {
     if (opt >= 0 && opt < options.length) {
-      this.optionName = options[opt];
-      this.option = opt;
+      this.option = options[opt].value;
     }
   },
   async getFiltredItems() {
@@ -36,7 +35,7 @@ const FilterObj = {
     if (this.option == 'all') res = await fetch(`${apiUrl}/items?user=${user_id}`).then(res => res.json()) as Item[];
     else if (this.option == 'pending_reserve') res = await fetch(`${apiUrl}/items/reserved?user=${user_id}&status=pending&author`).then(res => res.json()) as Item[];
     else res = await fetch(`${apiUrl}/items?user=${user_id}&status=${this.option}`).then(res => res.json()) as Item[];
-    this.filtredItems = res
+    this.filtredItems = res;
   }
 }
 
@@ -61,5 +60,5 @@ const filterMenuObj = {
 }
 
 export const useFilterOptions = () => options
-export const useFilter = () => useState<FilterState>('filter', () => FilterObj)
+export const useFilter = () => useState<FilterState>('filter', () => filterObj)
 export const useFilterMenu = () => useState<FilterMenuState>('filtermenu', () => filterMenuObj)

@@ -1,16 +1,15 @@
-import { defineNuxtConfig } from 'nuxt'
-
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_BASE,
+      imgsBase: process.env.IMGS_BASE
+    }
+  },
   css: ['~/main.css'],
-  build: {
-    postcss: {
-      postcssOptions: {
-        plugins: {
-          tailwindcss: {},
-          autoprefixer: {},
-        }
-      }
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
     }
   },
   modules: ['@formkit/nuxt', '@vueuse/nuxt'],

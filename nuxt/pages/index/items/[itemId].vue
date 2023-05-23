@@ -2,12 +2,13 @@
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
 import { DateTime } from 'luxon';
+import { useImgsUrl } from '~/composables/useCount';
 definePageMeta({ pageTransition: true })
 
 const route = useRoute();
 const router = useRouter();
 const item = ref(await useGetItem(route.params.itemId as string));
-const itemsImages = await useItemImages(route.params.itemId as string);
+const itemImages = await useItemImages(route.params.itemId as string);
 const showSave = ref(false)
 const confirmDelete = ref(false);
 const confirmUpdate = ref(false);
@@ -28,15 +29,16 @@ const handleSave = () => {
 const refreshItem = async () => item.value = await useGetItem(route.params.itemId as string);
 
 const { data: { id: user_id } } = useUser();
+const imgsBase = useImgsUrl();
 </script>
 
 <template>
   <div class="mt-4 grid gap-6 w-full lg:grid-cols-2">
     <div class="text-primary-700 text-4xl lg:col-span-2"> {{ item.title }} </div>
     <carousel :items-to-show="1">
-      <slide v-for="image in [{ id: 0, image: item.cover }, ...itemsImages]" :key="image.id"
+      <slide v-for="image in [{ id: 0, image: item.cover }, ...itemImages]" :key="image.id"
         class="w-[98%] h-80 lg:h-[75vh] bg-slate-100 flex justify-center items-center rounded-md overflow-hidden">
-        <img :src="`http://localhost/imgs/${image.image}`" class="max-h-full max-w-full" draggable="false">
+      <img :src="`${imgsBase}/${image.image}`" class="max-h-full max-w-full" draggable="false">
       </slide>
 
       <template #addons>

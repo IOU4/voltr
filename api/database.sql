@@ -32,7 +32,7 @@ CREATE TABLE items (
   category_id INT,
   city_id INT NOT NULL,
   address TEXT,
-  status ENUM('default','reserved','deleted','archived') DEFAULT 'default',
+  status VARCHAR(255) DEFAULT 'pending_approve',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(id),
