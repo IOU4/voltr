@@ -6,11 +6,11 @@ services:
     image: emadou/voltr-app:0.1
     ports:
       - 80:80
-    links:
-      - phpcgi
+    depends_on:
+      - php
     volumes:
       - ./api/uploaded/imgs:/app/api/uploaded/imgs
-  db:
+  database:
     container_name: voltr_db
     image: emadou/voltr-db:0.1
     ports:
@@ -22,7 +22,7 @@ services:
       MARIADB_ALLOW_EMPTY_PASSWORD: yes
     volumes:
       - voltr_db:/var/lib/mysql
-  phpcgi:
+  php:
     container_name: voltr_phpcgi
     image: emadou/voltr-phpcgi:0.1
     volumes:
