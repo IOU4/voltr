@@ -19,3 +19,9 @@ chmod -R 777 uploads
 
 # run docker compose
 docker-compose up -d
+
+
+# install ssl cert after the app started 
+sleep 10 
+apk add --no-cache certbot-nginx
+certbot --nginx --non-interactive --agree-tos --redirect --register-unsafely-without-email --domains emad.eu.org

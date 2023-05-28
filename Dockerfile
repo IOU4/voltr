@@ -4,7 +4,7 @@ WORKDIR /app
 COPY ./nuxt  .
 
 RUN npm i
-RUN API_BASE=http://207.148.26.184:80/api IMGS_BASE=http://207.148.26.184:80/imgs npx nuxi build --prerender
+RUN  npx nuxi build --prerender --dotenv .env
 
 FROM nginx:stable-alpine3.17-slim
 RUN mkdir -p /usr/share/nginx/voltr
