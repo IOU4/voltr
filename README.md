@@ -8,13 +8,6 @@ $ cd api
 $ mv .env.example .env
 ```
 
-thing update access permissions for the `api/uploaded/imgs` directory by running:
-
-```bash
-$ chmod 777 api/uploaded/imgs
-```
-in linux. (i don't know how in windows).
-
 finally make sure you have docker and docker compose installed in you're machine and run:
 ```bash
 $ docker compose up -d
