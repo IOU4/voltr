@@ -37,7 +37,6 @@ body {
 }
 
 .profile-img {
-  background-image: url("https://api.lorem.space/image/face?hash=33791");
   @apply w-14 h-14 rounded-full bg-center bg-cover cursor-pointer;
 }
 

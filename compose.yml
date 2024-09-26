@@ -1,0 +1,49 @@
+services:
+  app:
+    build: 
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - php
+    networks:
+      - main_nginx
+      - default
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - voltr_imgs:/app/imgs
+
+  php:
+    build:
+      dockerfile: ./api.Dockerfile
+    volumes:
+      - voltr_imgs:/app/uploaded/imgs
+    depends_on:
+      - database
+    expose:
+      - 9000
+    networks:
+      - default
+
+  database:
+    build:
+      dockerfile: ./db.Dockerfile
+    expose:
+      - 3306
+    environment:
+      MARIADB_USER: root
+      MARIADB_DATABASE: voltr
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
+      MARIADB_ALLOW_EMPTY_PASSWORD: yes
+    volumes:
+      - voltr_db:/var/lib/mysql
+    networks:
+      - default
+
+volumes:
+  voltr_db:
+  voltr_imgs:
+
+networks:
+  main_nginx:
+    external: true

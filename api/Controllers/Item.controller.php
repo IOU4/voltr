@@ -198,7 +198,7 @@ class Item
   private function store_single_image(array $image, bool $isCover): string|bool
   {
     $tmp_name = $image['tmp_name'];
-    $uploads_dir = '/app/api/uploaded/imgs';
+    $uploads_dir = './uploaded/imgs';
     try {
       $name = $this->guidv4();
       $extension = basename($image['type']);

@@ -1,26 +1,12 @@
-FROM node:18.16.0-alpine3.16 as build
-
+# build nuxt app
+FROM node:lts-alpine3.17 as build
 WORKDIR /app
-COPY ./nuxt  .
-
+COPY ./nuxt .
 RUN npm i
-RUN  npx nuxi build --prerender --dotenv .env
+RUN npx nuxi build --prerender --dotenv .env
 
-FROM nginx:stable-alpine3.17-slim
+# serve nuxt app
+FROM nginx:stable-alpine3.17
 RUN mkdir -p /usr/share/nginx/voltr
-
-WORKDIR /app
-
-RUN mkdir .logs/
-RUN touch .logs/error.log
-
-RUN mkdir nuxt
-COPY --from=build /app/.output/public  nuxt
-
-RUN mkdir api
-COPY ./api api
-
-RUN mkdir logs
-RUN touch logs/error.log
-
+COPY --from=build /app/.output/public  /usr/share/nginx/voltr
 COPY ./nginx.conf /etc/nginx/nginx.conf

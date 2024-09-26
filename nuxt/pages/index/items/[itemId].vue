@@ -63,7 +63,7 @@ const imgsBase = useImgsUrl();
       </div>
       <NuxtLink to="/profile" class="flex gap-2 items-center mb-2">
         <div class="bg-cover bg-center w-10 h-10 rounded-full"
-          style="background-image:url('https://api.lorem.space/image/face?hash=33791');"> </div>
+          style="background-image:url('https://api.dicebear.com/9.x/notionists/svg');"> </div>
         <p class="text-sm text-primary-500">{{ item.author_id == user_id ? 'you' : item.author_name }}</p>
       </NuxtLink>
       <div v-if="item.author_id != user_id" class="flex space-x-2"

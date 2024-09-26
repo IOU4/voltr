@@ -52,7 +52,7 @@ const imgsBase = useImgsUrl();
       <div class="p-4 space-y-4">
         <div class="flex gap-2 items-center mb-2">
           <div class="bg-cover bg-center w-10 h-10 rounded-full"
-            style="background-image:url('https://api.lorem.space/image/face?hash=33791');"> </div>
+               style="background-image:url('https://api.dicebear.com/9.x/notionists/svg');"> </div>
           <p class="text-sm text-primary-500">{{ item.author_name }}</p>
           <p class="text-xs ml-auto mt-auto text-slate-300">{{ DateTime.fromSQL(item.created_at!).toRelative() }}
           </p>
@@ -113,8 +113,5 @@ const imgsBase = useImgsUrl();
     <Modal :show="confirmUpdate" @close="confirmUpdate = false">
       <UpdateItem :item="item" @close="confirmUpdate = false" @upd="$emit('upd')" />
     </Modal>
-    <p class="ring-1 ring-primary-300 text-primary-300 rounded-lg p-1 absolute text-xs bottom-2 right-2">
-      {{ item.status }}
-    </p>
   </div>
 </template>

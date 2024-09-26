@@ -22,7 +22,8 @@ onClickOutside(headerRef, () => menu.value.setMenu())
       <IconsNotif class="icon" stroke="stroke-primary-600"
         :class="menu.notification ? 'bg-primary-100 p-1 rounded-md' : 'fill-white'"
         @click="menu.setMenu('notification')" />
-      <div class="profile-img" @click="menu.setMenu('profile')" />
+      <div style="background-image:url('https://api.dicebear.com/9.x/notionists/svg');" 
+        class="profile-img" @click="menu.setMenu('profile')" />
     </div>
 
     <!-- notifications  -->
