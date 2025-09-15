@@ -3,7 +3,7 @@ FROM node:lts-alpine3.17 as build
 WORKDIR /app
 COPY ./nuxt .
 RUN npm i
-RUN npx nuxi build --prerender --dotenv .env
+RUN npx nuxi build --prerender
 
 # serve nuxt app
 FROM nginx:stable-alpine3.17

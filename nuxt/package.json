@@ -1,12 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxi build --prerender --dotenv .env",
-    "dev": "nuxi dev --doten .env.dev",
+    "build": "nuxi build --prerender",
+    "dev": "nuxi dev",
     "generate": "nuxi generate",
-    "preview": "nuxi preview",
-    "dokcerb": "docker buildx build -t emadou/voltr-app:0.1",
-    "dockerp": "docker push emadou/voltr-app:0.1"
+    "preview": "nuxi preview"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.1.4",

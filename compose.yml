@@ -2,8 +2,8 @@ services:
   app:
     build: 
       dockerfile: ./Dockerfile
-    ports:
-      - 80:80
+    expose:
+      - 80
     depends_on:
       - php
     networks:
@@ -26,8 +26,7 @@ services:
       - default
 
   database:
-    build:
-      dockerfile: ./db.Dockerfile
+    image: mariadb:10.9.5
     expose:
       - 3306
     environment:
@@ -39,6 +38,7 @@ services:
       - voltr_db:/var/lib/mysql
     networks:
       - default
+    restart: always
 
 volumes:
   voltr_db:

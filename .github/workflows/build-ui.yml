@@ -1,32 +1,26 @@
-name: Build and push voltr app
+name: Build and push voltr-ui
 on:
   push:
+    paths:
+      - 'nuxt/**'
+      - '.github/workflows/build-ui.yml'
   workflow_dispatch:
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-app
+
 jobs:
-  build:
+  build-ui:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
       id-token: write
-
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Create env file for nuxi generate
-        run: |
-          cd nuxt
-          touch .env
-          echo API_BASE="https://voltr.eu.org/api" >> .env
-          echo IMGS_BASE="https://voltr.eu.org/imgs" >> .env
 
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
@@ -40,13 +34,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-voltr-ui
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./nuxt
+          file: ./nuxt/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

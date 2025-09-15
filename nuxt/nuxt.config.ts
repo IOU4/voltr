@@ -1,8 +1,8 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      apiBase: "http://localhost:80/api",
-      imgsBase: "http://localhost:80/imgs" 
+      apiBase: "/api",
+      imgsBase: "/imgs" 
     }
   },
   css: ['~/main.css'],
