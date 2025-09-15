@@ -1,7 +1,7 @@
 FROM php:8.1-fpm-alpine3.17
 
 WORKDIR /app
-COPY ./api .
+COPY . .
 RUN chmod -R 777 uploaded/
 
 # install composer 

@@ -1,7 +1,7 @@
 # build nuxt app
 FROM node:lts-alpine3.17 as build
 WORKDIR /app
-COPY ./nuxt .
+COPY . .
 RUN npm i
 RUN npx nuxi build --prerender
 
