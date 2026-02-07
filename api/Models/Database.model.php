@@ -5,7 +5,7 @@ class Database
 
   function __construct()
   {
-    $connection = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME']);
+    $connection = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), getenv('DB_NAME'));
     $this->connection = $connection;
   }
 

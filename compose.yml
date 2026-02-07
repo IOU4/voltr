@@ -1,8 +1,8 @@
 services:
   app:
-    image: ghcr.io/iou4/voltr-voltr-ui:main
-    expose:
-      - 80
+    build: ./nuxt
+    ports:
+      - "8080:80"
     depends_on:
       - php
     networks:
@@ -12,9 +12,13 @@ services:
       - voltr_voltr_imgs:/app/imgs
 
   php:
-    image: ghcr.io/iou4/voltr-voltr-api:main
+    build: ./api
+    environment:
+      DB_HOST: database
+      DB_USER: root
+      DB_PASS: ""
+      DB_NAME: voltr
     volumes:
-      - ./.env:/app/.env
       - voltr_voltr_imgs:/app/uploaded/imgs
     depends_on:
       - database
@@ -34,6 +38,7 @@ services:
       MARIADB_ALLOW_EMPTY_PASSWORD: yes
     volumes:
       - voltr_voltr_db:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
     networks:
       - default
     restart: always

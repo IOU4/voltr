@@ -3,6 +3,14 @@
 class Item
 {
   private int $id;
+  private $title;
+  private $description;
+  private $author_id;
+  private $author_name;
+  private $cover;
+  private $category;
+  private $city;
+  private $address;
   private ItemModel $model;
   const ALLOWED_IMAGE_EXTENSIONS = ['png', 'jpeg', 'jpg', 'webp'];
 
@@ -131,7 +139,7 @@ class Item
   public function save($user_id)
   {
     try {
-      if (!isset($user_id, $this->id)) throw new Error('no sufficant data');
+      if (!isset($user_id, $this->id)) throw new Error('no sufficient data');
       $item = $this->model->get_saved_item($this->id, $user_id);
       if ($item) throw new Error('already saved');
       $this->model->save($user_id, $this->id);
@@ -224,14 +232,14 @@ class Item
       $item_id = $query['id'];
       $model = new ItemModel();
       $item = $model->fetch_full_item($item_id);
-      $reseved = array();
-      if ($item['status'] == 'pending_reserve') $reseved = $model->fetch_reserved_item($item_id);
+      $reserved = array();
+      if ($item['status'] == 'pending_reserve') $reserved = $model->fetch_reserved_item($item_id);
       $saved = $user_id = null;
       if (!empty($query['user'])) {
         $user_id = $query['user'];
         $saved = ($model->check_is_save($item_id, $user_id)) ? true : false;
       }
-      echo json_encode([...$item, ...$reseved, 'saved' => $saved]);
+      echo json_encode([...$item, ...$reserved, 'saved' => $saved]);
     } catch (Throwable $th) {
       http_response_code(400);
       echo json_decode($th->getMessage());

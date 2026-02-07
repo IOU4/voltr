@@ -1,6 +1,11 @@
 <script setup lang="ts">
 const menu = useNav();
+const route = useRoute();
 const headerRef = ref(null)
+const routeTitle = computed(() => {
+  const parts = route.path.split('/').filter(Boolean);
+  return parts.length > 0 ? parts[parts.length - 1] : 'home';
+})
 onClickOutside(headerRef, () => menu.value.setMenu())
 </script>
 
@@ -8,12 +13,12 @@ onClickOutside(headerRef, () => menu.value.setMenu())
   <header ref="headerRef"
     class="w-full fixed top-0 right-0 px-4 flex justify-between bg-white items-center shadow-md z-10">
     <!-- logo  -->
-    <div class="logo w-20 h-20">
+    <NuxtLink to="/" class="logo w-20 h-20">
       <img src="~assets/logo.png" alt="voltr logo">
-    </div>
+    </NuxtLink>
 
     <!-- route-name -->
-    <div class="text-primary-600">{{ $route.name }}</div>
+    <div class="text-primary-600 absolute left-1/2 -translate-x-1/2 capitalize">{{ routeTitle }}</div>
 
     <!-- profile -->
     <div class="flex gap-4 items-center">

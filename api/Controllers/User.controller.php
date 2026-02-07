@@ -69,7 +69,7 @@ class User
       echo json_encode(['logged' => false, 'error' => $e->getMessage()]);
     }
   }
-  public static function singup($data)
+  public static function signup($data)
   {
     if (!isset($data['email'], $data['phone'], $data['username'], $data['password'])) die(json_encode(['logged' => false, 'error' => 'no sufficient data']));
     $validated = array('email' => $data['email'], 'password' => password_hash($data['password'], PASSWORD_BCRYPT), 'phone' => $data['phone'], 'username' => $data['username']);

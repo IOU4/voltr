@@ -9,8 +9,4 @@ spl_autoload_register(function ($class_name) {
     include 'Models/' . $class_name . '.model.php';
 });
 
-require_once './vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 session_start();

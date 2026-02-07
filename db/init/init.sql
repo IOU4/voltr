@@ -93,8 +93,8 @@ CREATE DEFINER=CURRENT_USER TRIGGER `aprove_or_reject_reserve`
 DELIMITER ;
 
 INSERT INTO users ( id, username, email, phone, password) VALUES 
-  ( 1, 'emaduo', 'adim@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
-  ( 2, 'jawad', 'adim@jawad.me', '+212644556677', '$2y$10$GgRWD5Gf/As07rDoVGvZZ.CY2/Ki5JvsvwF3IICI2nsL.rDdbu3Mi'); -- password 'secret2' bcrypt default cost
+  ( 1, 'emaduo', 'admin@emad.me', '+212600112233', '$2y$10$hXXGkzXo6NHsuXDuYQQm2uh/DQvQwbn5y99h6lP6VYW9/C5/Z3kY2'), -- password 'secret'
+  ( 2, 'jawad', 'admin@jawad.me', '+212644556677', '$2y$10$GgRWD5Gf/As07rDoVGvZZ.CY2/Ki5JvsvwF3IICI2nsL.rDdbu3Mi'); -- password 'secret2' bcrypt default cost
 
 INSERT INTO categories (category) VALUES 
   ('books'), 

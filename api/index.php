@@ -18,7 +18,7 @@ $app->delete('/user', function ($data) {
 });
 $app->get('/user/totals', 'User::totals');
 $app->post('/login', 'User::login');
-$app->post('/singup', 'User::singup');
+$app->post('/signup', 'User::signup');
 
 
 // items
@@ -74,7 +74,5 @@ $app->get('/categories', 'Category::all');
 $app->get('/cities', 'City::all');
 
 
-http_response_code(400);
+http_response_code(404);
 echo (json_encode('no matches found'));
-session_unset();
-session_destroy();
