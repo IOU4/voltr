@@ -11,9 +11,8 @@ services:
       - voltr_voltr_db:/var/lib/mysql
       - ./db/init:/docker-entrypoint-initdb.d
 
-
   api:
-    build: ./api
+    image: ghcr.io/iou4/voltr-voltr-api:main
     environment:
       DB_HOST: db
       DB_USER: root
