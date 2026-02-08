@@ -1,33 +1,5 @@
 services:
-  app:
-    build: ./nuxt
-    ports:
-      - "8080:80"
-    depends_on:
-      - php
-    networks:
-      - main_nginx
-      - default
-    volumes:
-      - voltr_voltr_imgs:/app/imgs
-
-  php:
-    build: ./api
-    environment:
-      DB_HOST: database
-      DB_USER: root
-      DB_PASS: ""
-      DB_NAME: voltr
-    volumes:
-      - voltr_voltr_imgs:/app/uploaded/imgs
-    depends_on:
-      - database
-    expose:
-      - 9000
-    networks:
-      - default
-
-  database:
+  db:
     image: mariadb:10.9.5
     expose:
       - 3306
@@ -39,16 +11,33 @@ services:
     volumes:
       - voltr_voltr_db:/var/lib/mysql
       - ./db/init:/docker-entrypoint-initdb.d
-    networks:
-      - default
-    restart: always
 
+
+  api:
+    build: ./api
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASS: ""
+      DB_NAME: voltr
+    volumes:
+      - voltr_voltr_imgs:/app/uploaded/imgs
+    depends_on:
+      - db
+    expose:
+      - 9000
+
+  app:
+    build: ./nuxt
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    volumes:
+      - voltr_voltr_imgs:/app/imgs
+      
 volumes:
   voltr_voltr_db:
     external: true
   voltr_voltr_imgs:
-    external: true
-
-networks:
-  main_nginx:
     external: true
