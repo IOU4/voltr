@@ -1,6 +1,7 @@
 name: Build and push voltr-api
 on:
   push:
+    branches: [ main ]
     paths:
       - 'api/**'
       - '.github/workflows/build-api.yml'

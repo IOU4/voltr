@@ -1,6 +1,7 @@
 name: Build and push voltr-ui
 on:
   push:
+    branches: [ main ]
     paths:
       - 'nuxt/**'
       - '.github/workflows/build-ui.yml'
