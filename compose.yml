@@ -9,7 +9,7 @@ services:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
     volumes:
       - voltr_voltr_db:/var/lib/mysql
-      - ./db/init:/docker-entrypoint-initdb.d
+      - ./init:/docker-entrypoint-initdb.d
 
   api:
     image: ghcr.io/iou4/voltr-voltr-api:main
@@ -26,7 +26,7 @@ services:
       - 9000
 
   app:
-    build: ./nuxt
+    image: ghcr.io/iou4/voltr-voltr-ui:main
     ports:
       - "8080:80"
     depends_on:
