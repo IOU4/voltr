@@ -5,10 +5,10 @@ const user = useUser();
 const password = ref('');
 const passwordConfirmation = ref('');
 const apiUrl = useApiUrl();
-const hadleSubmit = async () => {
+const handleSubmit = async () => {
   const cAlert = useAlert();
-  if (passwordConfirmation.value != password.value) return cAlert.value.showAlert("password confirmation deosn't match", AlertType.FAIL);
-  const data = await fetch(`${apiUrl}/singup`, {
+  if (passwordConfirmation.value != password.value) return cAlert.value.showAlert("password confirmation doesn't match", AlertType.FAIL);
+  const data = await fetch(`${apiUrl}/signup`, {
     method: "POST",
     body: JSON.stringify({
       "email": user.data.email,
@@ -18,10 +18,10 @@ const hadleSubmit = async () => {
     }),
     headers: { "Content-Type": "application/json" }
   }).then(res => res.json()).catch(err => console.error(err));
-  if (!data?.logged) cAlert.value.showAlert(`error occured: ${data?.error}`, AlertType.FAIL);
+  if (!data?.logged) cAlert.value.showAlert(`error occurred: ${data?.error}`, AlertType.FAIL);
   else {
     user.setUser(data.user);
-    cAlert.value.showAlert(`account created succefully, welcome ${user.data.username} !!`, AlertType.SUCCESS);
+    cAlert.value.showAlert(`account created successfully, welcome ${user.data.username} !!`, AlertType.SUCCESS);
     navigateTo('/');
   }
 }
@@ -32,7 +32,7 @@ const hadleSubmit = async () => {
       Temporibus minima perferendis deserunt sequi odit soluta doloremque saepe, accusantium dolorem
       quis porro. Magni,
       cupiditate.</p>
-    <form @submit.prevent="hadleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" class="space-y-4">
       <CInput label="username" placeholder="jhon doe" v-model="user.data.username" required />
       <CInput label="email" placeholder="jhondoe@example.com" type="email" v-model="user.data.email" required />
       <CInput label="phone number" placeholder="002120------" type="tel" v-model="user.data.phone" required />
@@ -40,7 +40,7 @@ const hadleSubmit = async () => {
         required />
       <CInput label="confirm_password" placeholder="*****" type="password" v-model="passwordConfirmation" required />
       <div class="flex justify-between">
-        <input type="submit" value="SingIn"
+        <input type="submit" value="Sign Up"
           class="w-24 p-4 rounded-md bg-primary-500 focus:shadow-md hover:shadow-md hover:ring-2 text-white" />
         <div class="flex flex-col justify-end gap-2">
           <NuxtLink class="nuxtlink" to="/auth">already have an account?</NuxtLink>

@@ -17,7 +17,7 @@ const handleSubmit = async () => {
   if (data?.error) cAlert.value.showAlert(`error: ${data?.error}`, AlertType.FAIL);
   else {
     user.setUser(data.user)
-    cAlert.value.showAlert('lggedin succefully', AlertType.SUCCESS);
+    cAlert.value.showAlert('Logged in successfully', AlertType.SUCCESS);
     navigateTo('/');
   }
 }
@@ -33,10 +33,10 @@ const handleSubmit = async () => {
       <CInput label="email" type="email" placeholder="jhon doe" v-model="user.data.email" required />
       <CInput label="password" type="password" placeholder="*****" v-model="password" required />
       <div class="flex justify-between">
-        <input type="submit" value="SingIn"
+        <input type="submit" value="Sign In"
           class="w-24 p-4 rounded-md bg-primary-500 focus:shadow-md hover:shadow-md hover:ring-2 text-white" />
         <div class=" flex flex-col justify-end gap-2">
-          <NuxtLink class="nuxtlink" to="/auth/singup">don't have an account?</NuxtLink>
+          <NuxtLink class="nuxtlink" to="/auth/signup">don't have an account?</NuxtLink>
           <NuxtLink class="nuxtlink" to="/auth/resetpassword">forgot your password?</NuxtLink>
           <NuxtLink class="nuxtlink" to="/auth/resetpassword">login as organization</NuxtLink>
         </div>
