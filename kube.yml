@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: voltr
+  labels:
+    app: voltr
+spec:
+  containers:
+    - name: api
+      image: ghcr.io/iou4/voltr-voltr-api:main
+      env:
+        - name: DB_HOST
+          value: localhost
+        - name: DB_USER
+          value: root
+        - name: DB_PASS
+        - name: DB_NAME
+          value: voltr
+      volumeMounts:
+        - name: voltr-imgs
+          mountPath: /app/uploaded/imgs
+
+    - name: app
+      image: ghcr.io/iou4/voltr-voltr-ui:main
+      ports:
+        - containerPort: 80
+          hostPort: 8081
+      volumeMounts:
+        - name: voltr-imgs
+          mountPath: /app/imgs
+
+  volumes:
+    - name: voltr-imgs
+      persistentVolumeClaim:
+        claimName: voltr_voltr_imgs
